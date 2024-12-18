@@ -1,0 +1,592 @@
+<template>
+  <div class="bg"></div>
+  <div class="custom-container" ref="container">
+    <!-- loading -->
+    <div class="d-flex justify-content-center custom-spinner" v-if="loading">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <!-- 操作區域 -->
+    <div class="control-box">
+      <!-- 返回上一層 -->
+      <div class="page-title">
+        <h1 class="svelte-ypi6vb" v-if="deep === 0">
+          <span class="year svelte-ypi6vb">2024</span
+          ><span class="text svelte-ypi6vb" data-svelte-h="svelte-1y3jmw7"
+            >總統大選</span
+          >
+        </h1>
+        <div class="back" @click="goBack" v-else>
+          <img src="/image/TaiwanSelection/arrow.svg" alt="" />
+          <p>返回上一層</p>
+        </div>
+        <!-- 手機板查詢按鈕 -->
+        <div class="">
+          <button class="search-button" @click="isShow = true">搜尋縣市</button>
+        </div>
+      </div>
+
+      <!-- 電腦版視窗 -->
+      <div class="window-pc">
+        <h2 class="title">選情分析</h2>
+        <div class="search wrap">
+          <input
+            type="text"
+            placeholder="請輸入縣市名稱"
+            v-model="searchStr"
+            @focus="focusing = true"
+            :disabled="loading"
+          />
+          <ul
+            class="location-options"
+            :style="{ padding: filterLocationOptions.length ? '8px 16px' : '' }"
+          >
+            <li
+              v-for="item in filterLocationOptions"
+              :key="item.id"
+              @click="chooseAddress(item)"
+            >
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
+        <template v-if="currAreaName">
+          <div class="introduce wrap">
+            <div class="address">{{ currAreaName }}</div>
+            <div class="selection">
+              <div class="selection-item">
+                <div>
+                  柯文哲
+                  <div class="party" :style="{ backgroundColor: '#00C8C8' }">
+                    眾
+                  </div>
+                </div>
+                <p>{{ currAreaSelection.cand_1 }}%</p>
+              </div>
+              <div class="selection-item">
+                <div>
+                  賴清德
+                  <div class="party" :style="{ backgroundColor: '#2DC46E' }">
+                    民
+                  </div>
+                </div>
+                <p>{{ currAreaSelection.cand_2 }}%</p>
+              </div>
+              <div class="selection-item">
+                <div>
+                  侯友宜
+                  <div class="party" :style="{ backgroundColor: '#4A8FE7' }">
+                    國
+                  </div>
+                </div>
+                <p>{{ currAreaSelection.cand_3 }}%</p>
+              </div>
+            </div>
+            <div class="desc">{{ locationData.textContent }}</div>
+          </div>
+        </template>
+      </div>
+    </div>
+    <!-- 地圖 -->
+    <div class="map">
+      <Taiwan
+        v-model:deep-val="deep"
+        v-model:search-param="searchParam"
+        v-model:loading="loading"
+        @update-deep="updateDeep"
+        @get-location-data="(val) => (locationData = val)"
+        @update-selection-info="(val) => (selectionInfo = val)"
+      />
+    </div>
+    <!-- 手機版視窗 -->
+    <div class="window-h5" v-show="deep > 0">
+      <div class="introduce">
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button
+                class="accordion-button"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                <div class="address">{{ currAreaName }}</div>
+              </button>
+            </h2>
+            <div
+              id="collapseOne"
+              class="accordion-collapse collapse show"
+              aria-labelledby="headingOne"
+              data-bs-parent="#accordionExample"
+            >
+              <div class="accordion-body">
+                <div class="selection">
+                  <div class="selection-item">
+                    <div>
+                      柯文哲
+                      <div
+                        class="party"
+                        :style="{ backgroundColor: '#00C8C8' }"
+                      >
+                        眾
+                      </div>
+                    </div>
+                    <p>{{ currAreaSelection.cand_1 }}%</p>
+                  </div>
+                  <div class="selection-item">
+                    <div>
+                      賴清德
+                      <div
+                        class="party"
+                        :style="{ backgroundColor: '#2DC46E' }"
+                      >
+                        民
+                      </div>
+                    </div>
+                    <p>{{ currAreaSelection.cand_2 }}%</p>
+                  </div>
+                  <div class="selection-item">
+                    <div>
+                      侯友宜
+                      <div
+                        class="party"
+                        :style="{ backgroundColor: '#4A8FE7' }"
+                      >
+                        國
+                      </div>
+                    </div>
+                    <p>{{ currAreaSelection.cand_3 }}%</p>
+                  </div>
+                </div>
+                <!-- AI分析 -->
+                <div
+                  class="accordion accordion-flush"
+                  id="accordionFlushExample"
+                >
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                      <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#flush-collapseOne"
+                        aria-expanded="false"
+                        aria-controls="flush-collapseOne"
+                      >
+                        AI分析
+                      </button>
+                    </h2>
+                    <div
+                      id="flush-collapseOne"
+                      class="accordion-collapse collapse"
+                      aria-labelledby="flush-headingOne"
+                      data-bs-parent="#accordionFlushExample"
+                    >
+                      <div class="accordion-body desc">
+                        {{ locationData.textContent }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 手機板查詢 -->
+    <div class="search-h5" :style="{ height: isShow ? '100vh' : '0' }">
+      <div class="close" v-if="isShow" @click="isShow = false">
+        <img
+          class="close-icon svelte-losp1r"
+          src="/image/TaiwanSelection/cross.png"
+          alt="close icon"
+        />
+      </div>
+
+      <div class="">
+        <h2 class="title">選情分析</h2>
+        <div class="search wrap">
+          <input
+            type="text"
+            placeholder="請輸入縣市名稱"
+            v-model="searchStr"
+            @focus="focusing = true"
+            :disabled="loading"
+          />
+          <ul
+            class="location-options"
+            :style="{ padding: filterLocationOptions.length ? '8px 16px' : '' }"
+          >
+            <li
+              v-for="item in filterLocationOptions"
+              :key="item.id"
+              @click="
+                chooseAddress(item);
+                isShow = false;
+              "
+            >
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+// import Taiwan from "@/components/TaiwanSelection/index.vue";
+import Taiwan from "@/stories/TaiwanSelection/index.vue";
+// import * as bootstrap from "bootstrap";
+import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js";
+
+const locationMap = {};
+
+export default {
+  components: {
+    Taiwan,
+  },
+  data() {
+    return {
+      deep: 0,
+      locationData: {},
+      currAddress: "",
+      locationOptions: [],
+      searchStr: "",
+      searchParam: {},
+      focusing: true,
+      selectionInfo: {},
+      selectionData: [],
+      loading: true,
+      isShow: false,
+    };
+  },
+  methods: {
+    goBack() {
+      if (this.deep > 0) {
+        this.deep--;
+        this.searchStr = "";
+      }
+    },
+    chooseAddress(item) {
+      this.searchStr = item.name;
+      this.searchParam = item;
+      this.focusing = false;
+    },
+    findParentId(id) {
+      const countryId = id.length > 5 && id.slice(0, 5);
+      const townId = id.length > 8 && id.slice(0, 8);
+
+      return {
+        countryId,
+        townId,
+      };
+    },
+    mappingName(id) {
+      if (!id) return "";
+      const { countryId, townId } = this.findParentId(id);
+
+      const countryName = locationMap[countryId] || "";
+      const townName = locationMap[townId] || "";
+      const areaName = locationMap[id];
+
+      return countryName + townName + areaName;
+    },
+    updateDeep(val) {
+      this.deep = val;
+      this.searchStr = "";
+    },
+    handleLocationMap(rows) {
+      rows.forEach((items, index, array) => {
+        const item = items.split(",");
+        const countryId = item[0];
+        const townId = item[1];
+        const villageId = item[2];
+
+        if (!locationMap.hasOwnProperty(countryId)) {
+          locationMap[countryId] = item[0 + 3];
+        }
+        if (!locationMap.hasOwnProperty(townId)) {
+          locationMap[townId] = item[1 + 3];
+        }
+        locationMap[villageId] = item[2 + 3];
+      });
+    },
+    async getLocationData() {
+      await fetch("/data/TaiwanSelection/csv/area-code.csv")
+        .then((res) => res.text())
+        .then((text) => {
+          const rows = text.split("\n").slice(1);
+          this.handleLocationMap(rows);
+        });
+    },
+  },
+  computed: {
+    currAreaSelection() {
+      const { id } = this.locationData;
+      if (!id) return {};
+      return this.selectionInfo[id] || {};
+    },
+    currAreaName() {
+      if (this.deep === 0) return "";
+      const { id } = this.locationData;
+      return id ? this.mappingName(id) : "尚無資料";
+    },
+    filterLocationOptions() {
+      if (!this.searchStr || !this.focusing) return [];
+      const matchOptions = this.locationOptions
+        .filter((item) => item.name.includes(this.searchStr))
+        .map((item) => {
+          const matchIndex = item.name.indexOf(this.searchStr);
+          const { countryId, townId } = this.findParentId(item.id);
+          const idList = [countryId, townId, item.id].filter((item) => item);
+
+          const matchCount =
+            this.searchStr === item.name.slice(0, this.searchStr.length)
+              ? this.searchStr.length
+              : 0;
+
+          return {
+            name: item.name,
+            id: item.id,
+            idList,
+            matchCount,
+          };
+        })
+        .sort((a, b) => b.matchCount - a.matchCount)
+        .slice(0, 10);
+
+      return matchOptions || [];
+    },
+  },
+  async mounted() {
+    await this.getLocationData();
+
+    const isIOSByUA = /iP(hone|od|ad)/i.test(navigator.userAgent);
+
+    /**
+     * safari瀏覽器在鍵盤出現時，
+     * 會將視窗往上移動避免蓋住內
+     * 容，但不會自動復原，導致畫
+     * 面跑掉，所以自訂義式見修復
+     */
+    if (isIOSByUA) {
+      const { container } = this.$refs;
+      //键盘弹出的事件处理
+      document.body.addEventListener("focusin", () => {
+        setTimeout(() => {
+          container.style.height = `${
+            window.visualViewport.height || window.innerHeight
+          }px`;
+          window.scrollTo(0, 0);
+        }, 100);
+      });
+      //键盘收起的事件处理
+      document.body.addEventListener("focusout", () => {
+        setTimeout(() => {
+          container.style.height = `100vh`;
+        }, 100);
+      });
+    }
+
+    if (isIOSByUA) {
+      document.querySelector(".window-h5").style.bottom = "86px";
+    }
+
+    // 製作地圖名稱的雜湊表
+    for (const id in locationMap) {
+      this.locationOptions.push({
+        name: this.mappingName(id),
+        id,
+      });
+    }
+  },
+};
+</script>
+<style lang="scss">
+@import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css";
+@import "@/assets/style/TaiwanSelection/window.css";
+
+* {
+  padding: 0;
+  margin: 0;
+  shape-rendering: crispEdges;
+  list-style: none;
+  box-sizing: border-box;
+}
+p,
+ul,
+h2 {
+  margin: 0;
+  padding: 0;
+}
+html {
+  overflow: hidden;
+  height: 100%;
+}
+body {
+  background-color: rgb(244, 244, 244);
+}
+.bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: conic-gradient(
+    from 135deg at 52.72% 30.87%,
+    rgba(98, 132, 255, 0.3) 30.4565128684deg,
+    rgba(163, 203, 255, 0.3) 51.4212781191deg,
+    rgba(69, 234, 234, 0.3) 94.6980285645deg,
+    rgba(177, 234, 224, 0.3) 169.1589081287deg
+  );
+  filter: blur(121.8189086914px);
+}
+
+.custom-container {
+  position: relative;
+  /* height: 100vh; */
+  height: 100%;
+}
+
+.page-title {
+  position: absolute;
+  left: 10px;
+  top: 10%;
+  z-index: 10;
+}
+
+.page-title .year {
+  color: #a4aeef;
+  font-size: 56px;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.page-title .text {
+  color: #3b4f7d;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.back {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #5a6be3;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
+    1px 1px 0 #fff;
+}
+
+.control-box {
+  max-width: 1440px;
+  margin: auto;
+  position: relative;
+  z-index: 20;
+  top: 100px;
+}
+
+.map {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.wrap {
+  background-color: rgba(244, 244, 244, 0.9);
+  margin-bottom: 20px;
+  border-radius: 8px;
+  padding: 16px;
+}
+.location-options {
+  max-height: 300px;
+  overflow-y: scroll;
+  background-color: #fff;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 90%;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.location-options li {
+  cursor: pointer;
+  font-weight: 500;
+}
+.location-options li:hover {
+  color: #3b4f7d;
+}
+
+.custom-spinner {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  left: 0;
+  top: 0;
+  align-items: center;
+  z-index: 10;
+  background-color: rgba(240, 248, 255, 0.24);
+}
+
+.search-button {
+  display: none;
+  color: #fff;
+  border-radius: 100px;
+  background-color: #5a6be3;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  margin-top: 10px;
+}
+
+.search-h5 {
+  display: none;
+  width: 100%;
+  height: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #5a6be3;
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  overflow: hidden;
+}
+
+.close {
+  display: none;
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: 22px;
+  height: 22px;
+}
+.close img {
+  width: 100%;
+  height: 100%;
+}
+
+@media screen and (max-width: 1024px) {
+  .bg {
+    display: none;
+  }
+  .control-box {
+    top: 50px;
+  }
+  .search-button {
+    display: block;
+  }
+  .search-h5 {
+    display: flex;
+  }
+  .close {
+    display: block;
+  }
+}
+</style>

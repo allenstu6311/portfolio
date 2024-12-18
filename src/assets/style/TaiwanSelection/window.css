@@ -1,0 +1,119 @@
+.window-pc {
+    box-sizing: border-box;
+    width: 300px;
+    border-radius: 8px;
+    position: absolute;
+    top: 10%;
+    right: 10px;
+    background-color: #5a6be3;
+    padding: 16px 24px;
+}
+
+.window-pc .title,
+.search-h5 .title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #fff;
+}
+
+.search input {
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    width: 100%;
+}
+
+.search {
+    position: relative;
+    background-color: #fff;
+}
+
+.desc {
+    overflow-y: scroll;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+}
+
+.desc::-webkit-scrollbar,
+ul::-webkit-scrollbar {
+    width: 0;
+}
+
+.introduce .address {
+    text-align: center;
+}
+
+.selection {
+    border-top: 1px solid #c0c6d0;
+    border-bottom: 1px solid #c0c6d0;
+    padding: 10px 0;
+    margin: 10px 0;
+    line-height: 26px;
+}
+
+.selection-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.selection-item div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.party {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.window-h5 {
+    display: none;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 16px;
+    background-color: rgba(244, 244, 244, 0.9);
+}
+
+/* 支援Safari 
+@supports (-webkit-touch-callout: none) {
+    .window-h5 {
+        bottom: 86px;
+    }
+} */
+
+.accordion-item,
+.accordion-button {
+    background-color: transparent;
+}
+
+@media screen and (max-width: 1024px) {
+    .window-pc {
+        display: none;
+    }
+
+    .window-h5 {
+        display: block;
+    }
+
+    .selection {
+        border-top: 1px solid #c0c6d0;
+        border-bottom: 1px solid #c0c6d0;
+        padding: 5px 0;
+        margin: 5px 0;
+    }
+
+    .desc {
+        height: 250px;
+    }
+}
