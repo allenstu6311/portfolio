@@ -10,6 +10,7 @@ import {
 } from "@/utils/TaiwanSelection";
 import * as d3 from "d3";
 import * as topojson from "topojson";
+import { pathname } from "../../utils/TaiwanSelection";
 
 export default {
   props: {
@@ -168,13 +169,12 @@ export default {
         });
     },
     getMapData(id) {
-      let url = "/data/TaiwanSelection/topoJson/towns-mercator.json";
+      let url = `${pathname}/data/TaiwanSelection/topoJson/towns-mercator.json`;
       if (id) {
         if (this.villageDataList[id]) return this.villageDataList[id];
         this.$emit("update:loading", true);
-        url = `/data/TaiwanSelection/topoJson/tw-village/${id}.json`;
+        url = `${pathname}/data/TaiwanSelection/topoJson/tw-village/${id}.json`;
       }
-      console.log(url);
 
       return fetch(url)
         .then((res) => res.json())

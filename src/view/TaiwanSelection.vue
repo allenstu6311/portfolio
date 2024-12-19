@@ -242,7 +242,7 @@
 import Taiwan from "@/stories/TaiwanSelection/index.vue";
 // import * as bootstrap from "bootstrap";
 import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js";
-
+import { pathname } from "../utils/TaiwanSelection";
 const locationMap = {};
 
 export default {
@@ -316,7 +316,7 @@ export default {
       });
     },
     async getLocationData() {
-      await fetch("/data/TaiwanSelection/csv/area-code.csv")
+      await fetch(`${pathname}/data/TaiwanSelection/csv/area-code.csv`)
         .then((res) => res.text())
         .then((text) => {
           const rows = text.split("\n").slice(1);

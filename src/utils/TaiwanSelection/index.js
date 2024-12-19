@@ -3,6 +3,8 @@ let townsCsv = [];
 let townsId = "";
 
 export const locationMap = {};
+export const pathname =
+  process.env.NODE_ENV === "production" ? "portfolio" : "";
 
 export function pairId(textRow, id) {
   for (let i = 0; i < textRow.length; i++) {
@@ -24,8 +26,8 @@ function parseCSV(text) {
   return rows;
 }
 
-async function getCsv(url, id, deep) {
-  const res = await fetch(`/data/TaiwanSelection/csv/${url}.csv`);
+async function getCsv(url, id) {
+  const res = await fetch(`${pathname}/data/TaiwanSelection/csv/${url}.csv`);
   const text = await res.text();
   const textContent = pairId(parseCSV(text), id);
   return textContent;

@@ -1,6 +1,7 @@
 <script setup></script>
 
 <template>
+  <router-link to="TaiwanSelection">TaiwanSelection</router-link>
   <router-view></router-view>
 </template>
 

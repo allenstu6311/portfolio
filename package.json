@@ -8,9 +8,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "build-demo": "vite build && node script/deployGithub"
   },
   "dependencies": {
+    "axios": "^1.7.9",
     "vue": "^3.5.13",
     "vue-router": "4"
   },
