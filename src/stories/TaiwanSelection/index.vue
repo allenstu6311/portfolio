@@ -407,7 +407,9 @@ export default {
     },
     getSelectionData(id) {
       if (!id) return;
-      return fetch(`/data/TaiwanSelection/topoJson/selection/${id}.json`)
+      return fetch(
+        `${pathname}/data/TaiwanSelection/topoJson/selection/${id}.json`
+      )
         .then((res) => res.json())
         .then((data) => {
           this.selectionData = this.selectionData.concat(data);

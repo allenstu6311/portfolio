@@ -4,7 +4,7 @@ let townsId = "";
 
 export const locationMap = {};
 export const pathname =
-  process.env.NODE_ENV === "production" ? "portfolio" : "";
+  process.env.NODE_ENV === "production" ? "/portfolio" : "";
 
 export function pairId(textRow, id) {
   for (let i = 0; i < textRow.length; i++) {
