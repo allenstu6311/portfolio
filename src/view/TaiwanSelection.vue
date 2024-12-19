@@ -238,10 +238,8 @@
   </div>
 </template>
 <script>
-// import Taiwan from "@/components/TaiwanSelection/index.vue";
 import Taiwan from "@/stories/TaiwanSelection/index.vue";
-// import * as bootstrap from "bootstrap";
-import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js";
+import "@/assets/js/bootstrap.min.js";
 import { pathname } from "../utils/TaiwanSelection";
 const locationMap = {};
 
@@ -407,7 +405,7 @@ export default {
 };
 </script>
 <style lang="scss">
-@import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css";
+@import "@/assets/style/bootstrap.min.css";
 @import "@/assets/style/TaiwanSelection/window.css";
 
 * {

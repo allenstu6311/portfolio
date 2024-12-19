@@ -465,7 +465,10 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
+// @import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css";
+// @import "@/assets/style/TaiwanSelection/window.css";
+
 svg {
   width: 100%;
   height: 100vh;
