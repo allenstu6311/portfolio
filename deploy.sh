@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # 當發生錯誤時終止腳本運行
-#指令 sh deploy.sh
+#在 git bash 並執行指令 sh deploy.sh
 
 set -e
 
