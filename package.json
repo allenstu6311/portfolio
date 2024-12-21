@@ -9,7 +9,13 @@
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-demo": "vite build && node script/deployGithub"
+    "build-demo": "vite build && node script/deployGithub",
+    "cy:open": "cypress open",
+    "test:e2e": "start-server-and-test vite http://localhost:5173/ test:cy",
+    "test:headed": "npx cypress run --headed --browser chrome",
+    "test:cy":"npx cypress run --browser chrome",
+    "test:vite": "vitest --run",
+    "test":"pnpm test:vite && pnpm test:e2e"
   },
   "dependencies": {
     "axios": "^1.7.9",
@@ -26,11 +32,16 @@
     "@storybook/vue3": "8.4.7",
     "@storybook/vue3-vite": "^8.4.7",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/test-utils": "^2.4.6",
     "bootstrap": "5",
+    "cypress": "^13.17.0",
     "d3": "^7.9.0",
+    "jsdom": "^25.0.1",
     "sass-embedded": "^1.83.0",
+    "start-server-and-test": "^2.0.9",
     "storybook": "8.4.7",
     "topojson": "3",
-    "vite": "^6.0.1"
+    "vite": "^6.0.1",
+    "vitest": "^2.1.8"
   }
 }

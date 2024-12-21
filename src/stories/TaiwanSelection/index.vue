@@ -179,7 +179,7 @@ export default {
       return fetch(url)
         .then((res) => res.json())
         .then((data) => {
-          if (id) {
+          if (id) {            
             this.villageDataList[id] = data;
             this.$emit("update:loading", false);
           }
@@ -405,16 +405,18 @@ export default {
         .attr("stroke-width", `0.${4 - useDeep}`);
       // .attr("stroke-width", `0.4`);
     },
-    getSelectionData(id) {
-      if (!id) return;
+    getSelectionData(id) {      
+      if (!id) return;      
       return fetch(
         `${pathname}/data/TaiwanSelection/topoJson/selection/${id}.json`
       )
         .then((res) => res.json())
         .then((data) => {
-          this.selectionData = this.selectionData.concat(data);
+          this.updateSelectionData(data);
         })
-        .catch(() => {});
+    },
+    updateSelectionData(data){
+      this.selectionData = this.selectionData.concat(data);      
     },
     calauteSelectionRate(id, data) {
       let cand_1 = 0; // 民眾黨
@@ -458,7 +460,7 @@ export default {
       }
     });
 
-    this.$nextTick(() => {
+    this.$nextTick(async () => {
       this.initMap(true);
       this.initD3js();
     });
