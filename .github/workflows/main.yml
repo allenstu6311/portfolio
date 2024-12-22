@@ -17,9 +17,6 @@ jobs:
         with:
           version: 9 # 设置 pnpm 的版本，例如 8.x
 
-      # - name: Install pnpm
-      #   run: npm i pnpm
-
       - name: Install dependencies
         run: pnpm i
 

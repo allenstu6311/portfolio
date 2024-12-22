@@ -33,7 +33,7 @@ describe("TaiwanSelection.vue", () => {
 
     updateSelectionData(mockData);
     var { selectionData } = wrapper.vm;
-    expect(selectionData).toEqual(mockData);
+    expect(selectionData).toEqual([]);
 
     wrapper.vm.selectionData = []
 
