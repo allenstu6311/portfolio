@@ -23,7 +23,11 @@ jobs:
       - name: Test
         run: pnpm test
 
-      # - name: Build the project
-      #   run: pnpm build
+      # 配置 git 用户信息
+      - name: Configure Git
+        run: |
+          git config --global user.name "allen"
+          git config --global user.email "stuallen6311@gmail.com"
+
       - name: deploy
         run: sh deploy.sh
