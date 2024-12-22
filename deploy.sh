@@ -23,12 +23,9 @@ git add -A
 git commit -m 'Deploy 1104'
 
 
-
-
 # 申請GitHub Personal access tokens，記得不要將這個檔案推到git，token會暴露
 # 將 dist資料夾中的內容推送至遠端github-pages分支中
 # 並強制無條件將舊有的內容取代成目前的內容（指令 git push -f)
-
 # git push -f https://github.com/allenstu6311/portfolio.git master:demo
 
 # 使用 GITHUB_TOKEN 進行身份驗證
