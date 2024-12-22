@@ -19,8 +19,8 @@ git add -A
 git commit -m 'Deploy 1104'
 
 # 在脚本中设置身份
-git config --global user.name "allen"
-git config --global user.email "stuallen6311@gmail.com"
+# git config --global user.name "allen"
+# git config --global user.email "stuallen6311@gmail.com"
 
 
 # 申請GitHub Personal access tokens，記得不要將這個檔案推到git，token會暴露

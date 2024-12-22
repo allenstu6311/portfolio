@@ -24,10 +24,10 @@ jobs:
         run: pnpm test
 
       # 配置 git 用户信息
-      # - name: Configure Git
-      #   run: |
-      #     git config --global user.name "allen"
-      #     git config --global user.email "stuallen6311@gmail.com"
+      - name: Configure Git
+        run: |
+          git config --global user.name "allen"
+          git config --global user.email "stuallen6311@gmail.com"
 
       - name: deploy
         env:
