@@ -23,5 +23,7 @@ jobs:
       - name: Test
         run: pnpm test
 
-      - name: Build the project
-        run: pnpm build
+      # - name: Build the project
+      #   run: pnpm build
+      - name: deploy
+        run: sh deploy.sh
