@@ -18,12 +18,20 @@ git init
 git add -A
 git commit -m 'Deploy 1104'
 
+# 在脚本中设置身份
+git config --global user.name "allen"
+git config --global user.email "stuallen6311@gmail.com"
+
 
 # 申請GitHub Personal access tokens，記得不要將這個檔案推到git，token會暴露
 # 將 dist資料夾中的內容推送至遠端github-pages分支中
 # 並強制無條件將舊有的內容取代成目前的內容（指令 git push -f)
 
-git push -f https://github.com/allenstu6311/portfolio.git master:demo
+# git push -f https://github.com/allenstu6311/portfolio.git master:demo
+# 使用 GITHUB_TOKEN 進行身份驗證
+git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/<你的用戶名>/<你的倉庫>.git
+git push -f origin master:demo
+
 cd -
 # 在.gitignore中增加 /resume-202209
 
