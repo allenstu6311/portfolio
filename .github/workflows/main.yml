@@ -10,13 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Install pnpm
-        run: npm i pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9 # 设置 pnpm 的版本，例如 8.x
+
+      # - name: Install pnpm
+      #   run: npm i pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm i
 
       - name: Test
         run: pnpm test
