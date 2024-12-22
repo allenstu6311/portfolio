@@ -12,11 +12,14 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
+      - name: Install pnpm
+        run: npm i pnpm
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Test
-        run: npm run test
+        run: pnpm test
 
       - name: Build the project
-        run: npm run build
+        run: pnpm build
