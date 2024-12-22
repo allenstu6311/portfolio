@@ -28,6 +28,7 @@ git commit -m 'Deploy 1104'
 # 並強制無條件將舊有的內容取代成目前的內容（指令 git push -f)
 
 # git push -f https://github.com/allenstu6311/portfolio.git master:demo
+
 # 使用 GITHUB_TOKEN 進行身份驗證
 git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/allenstu6311/portfolio.git
 git push -f origin master:demo
