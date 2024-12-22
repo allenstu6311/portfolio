@@ -54,35 +54,7 @@
         <template v-if="currAreaName">
           <div class="introduce wrap">
             <div class="address">{{ currAreaName }}</div>
-            <div class="selection">
-              <div class="selection-item">
-                <div>
-                  柯文哲
-                  <div class="party" :style="{ backgroundColor: '#00C8C8' }">
-                    眾
-                  </div>
-                </div>
-                <p>{{ currAreaSelection.cand_1 }}%</p>
-              </div>
-              <div class="selection-item">
-                <div>
-                  賴清德
-                  <div class="party" :style="{ backgroundColor: '#2DC46E' }">
-                    民
-                  </div>
-                </div>
-                <p>{{ currAreaSelection.cand_2 }}%</p>
-              </div>
-              <div class="selection-item">
-                <div>
-                  侯友宜
-                  <div class="party" :style="{ backgroundColor: '#4A8FE7' }">
-                    國
-                  </div>
-                </div>
-                <p>{{ currAreaSelection.cand_3 }}%</p>
-              </div>
-            </div>
+            <Selection :currAreaSelection="currAreaSelection" />
             <div class="desc">{{ locationData.textContent }}</div>
           </div>
         </template>
@@ -123,44 +95,7 @@
               data-bs-parent="#accordionExample"
             >
               <div class="accordion-body">
-                <div class="selection">
-                  <div class="selection-item">
-                    <div>
-                      柯文哲
-                      <div
-                        class="party"
-                        :style="{ backgroundColor: '#00C8C8' }"
-                      >
-                        眾
-                      </div>
-                    </div>
-                    <p>{{ currAreaSelection.cand_1 }}%</p>
-                  </div>
-                  <div class="selection-item">
-                    <div>
-                      賴清德
-                      <div
-                        class="party"
-                        :style="{ backgroundColor: '#2DC46E' }"
-                      >
-                        民
-                      </div>
-                    </div>
-                    <p>{{ currAreaSelection.cand_2 }}%</p>
-                  </div>
-                  <div class="selection-item">
-                    <div>
-                      侯友宜
-                      <div
-                        class="party"
-                        :style="{ backgroundColor: '#4A8FE7' }"
-                      >
-                        國
-                      </div>
-                    </div>
-                    <p>{{ currAreaSelection.cand_3 }}%</p>
-                  </div>
-                </div>
+                <Selection :currAreaSelection="currAreaSelection" />
                 <!-- AI分析 -->
                 <div
                   class="accordion accordion-flush"
@@ -238,7 +173,8 @@
   </div>
 </template>
 <script>
-import Taiwan from "@/stories/TaiwanSelection/index.vue";
+import Taiwan from "@/stories/TaiwanSelection/Taiwan.vue";
+import Selection from "@/stories/TaiwanSelection/Selection.vue";
 import "@/assets/js/bootstrap.min.js";
 import { pathname } from "../utils/TaiwanSelection";
 const locationMap = {};
@@ -246,6 +182,7 @@ const locationMap = {};
 export default {
   components: {
     Taiwan,
+    Selection,
   },
   data() {
     return {

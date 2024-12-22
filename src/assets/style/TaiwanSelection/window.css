@@ -53,17 +53,6 @@ ul::-webkit-scrollbar {
     line-height: 26px;
 }
 
-.selection-item {
-    display: flex;
-    justify-content: space-between;
-}
-
-.selection-item div {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
 .party {
     width: 22px;
     height: 22px;
@@ -104,13 +93,6 @@ ul::-webkit-scrollbar {
 
     .window-h5 {
         display: block;
-    }
-
-    .selection {
-        border-top: 1px solid #c0c6d0;
-        border-bottom: 1px solid #c0c6d0;
-        padding: 5px 0;
-        margin: 5px 0;
     }
 
     .desc {
