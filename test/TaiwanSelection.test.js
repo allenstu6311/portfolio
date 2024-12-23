@@ -8,8 +8,7 @@ import {
   beforeEach,
   afterEach,
 } from "vitest";
-import TaiwanSelection from "@/stories/TaiwanSelection/index.vue";
-
+import TaiwanSelection from "@/stories/TaiwanSelection/Taiwan.vue";
 
 describe("TaiwanSelection.vue", () => {
   let wrapper;
@@ -35,7 +34,7 @@ describe("TaiwanSelection.vue", () => {
     var { selectionData } = wrapper.vm;
     expect(selectionData).toEqual(mockData);
 
-    wrapper.vm.selectionData = []
+    wrapper.vm.selectionData = [];
 
     updateSelectionData([]);
     var { selectionData } = wrapper.vm;
