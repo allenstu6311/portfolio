@@ -1,6 +1,6 @@
 import { fn } from "@storybook/test";
 
-import TaiwanSelection from "./index.vue";
+import TaiwanSelection from "./Taiwan.vue";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
 export default {
