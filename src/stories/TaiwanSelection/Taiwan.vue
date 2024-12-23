@@ -119,12 +119,23 @@ export default {
           .append("g")
           .attr("class", "selected-county-villages");
 
-        this.areaData = await this.getMapData();
+        this.areaData = await this.getMapData(); //獲得第一層圖層
         const { counties } = this.areaData.objects;
 
-        for (let i = 0; i < counties.geometries.length; i++) {
-          await this.getSelectionData(counties.geometries[i].id);
-        }
+        // for (let i = 0; i < counties.geometries.length; i++) {
+        //   await this.getSelectionData(counties.geometries[i].id);
+        // }
+
+        const promises = counties.geometries.map((geometry) => {
+          return this.getSelectionData(geometry.id);
+        });
+
+        // 等待所有請求完成
+        const results = await Promise.all(promises);
+
+        // 批量更新數據
+        this.selectionData = results.flat(); // 將所有結果展平合併
+
         this.appendMap(0);
       }
       this.moveMapInCenter();
@@ -179,7 +190,7 @@ export default {
       return fetch(url)
         .then((res) => res.json())
         .then((data) => {
-          if (id) {            
+          if (id) {
             this.villageDataList[id] = data;
             this.$emit("update:loading", false);
           }
@@ -239,16 +250,11 @@ export default {
         .append("path")
         .attr("d", path)
         .attr("stroke", "#fff")
-        .attr("fill", (data, index) => {
+        .attr("fill", (data) => {
           const id = data.id ? data.id : data.properties.VILLCODE;
-          let range = 5;
-          if (deep === 1) range = 8;
-          if (deep === 2) range = 11;
-
-          const selectData = this.selectionData.filter((item) => {
-            return item.village_id.slice(0, range).includes(id);
-          });
-
+          const selectData = this.selectionData.filter((item) =>
+            item.village_id.startsWith(id)
+          );
           if (!selectData.length) return "lightblue";
           return this.calauteSelectionRate(id, selectData);
         })
@@ -264,7 +270,7 @@ export default {
       await this.updateCurrInfo(id, deep);
 
       if (deep === 1) {
-        this.villageData = await this.getMapData(id);
+        this.villageData = await this.getMapData(id); //取得村里SVG
 
         // 切換縣市
         this.townSvg.selectAll("path").remove();
@@ -405,18 +411,17 @@ export default {
         .attr("stroke-width", `0.${4 - useDeep}`);
       // .attr("stroke-width", `0.4`);
     },
-    getSelectionData(id) {      
-      if (!id) return;      
+    getSelectionData(id) {
+      if (!id) return;
       return fetch(
         `${pathname}/data/TaiwanSelection/topoJson/selection/${id}.json`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          this.updateSelectionData(data);
-        })
+      ).then((res) => res.json());
+      // .then((data) => {
+      //   this.updateSelectionData(data);
+      // });
     },
-    updateSelectionData(data){
-      this.selectionData = this.selectionData.concat(data);      
+    updateSelectionData(data) {
+      this.selectionData = this.selectionData.concat(data);
     },
     calauteSelectionRate(id, data) {
       let cand_1 = 0; // 民眾黨
