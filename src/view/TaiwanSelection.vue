@@ -362,6 +362,7 @@ export default {
     //键盘收起的事件处理
     document.body.addEventListener("focusout", () => {
       setTimeout(() => {
+        window.scrollTo(0, 0);
         container.style.height = `100vh`;
         this.updateH5Distance();
       }, 100);
