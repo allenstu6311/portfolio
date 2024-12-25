@@ -25,6 +25,7 @@
         <div class="">
           <button class="search-button" @click="isShow = true">
             搜尋縣市 {{ h5Distance.innerHeight }} {{ h5Distance.bottom }}
+            {{ h5Distance.visualViewport?.height }}
           </button>
         </div>
       </div>
@@ -209,7 +210,7 @@ export default {
       this.$nextTick(() => {
         const { windowH5 } = this.$refs;
         const { bottom } = windowH5.getBoundingClientRect();
-        const { innerHeight } = window;
+        const { innerHeight, visualViewport } = window;
         let distance = innerHeight - bottom;
         if (distance !== 0) {
           // distance = distance < 0 ? distance * -1 : distance;
@@ -220,6 +221,7 @@ export default {
         this.h5Distance = {
           innerHeight,
           bottom,
+          visualViewport,
         };
       });
     },
