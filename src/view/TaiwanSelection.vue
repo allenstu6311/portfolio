@@ -205,6 +205,16 @@ export default {
     };
   },
   methods: {
+    updateH5Distance() {
+      this.$nextTick(() => {
+        const { windowH5 } = this.$refs;
+        const { bottom } = windowH5.getBoundingClientRect();
+        const { innerHeight } = window;
+        if (innerHeight - bottom !== 0) {
+          windowH5.style.transform = `translateY(${innerHeight - bottom}px)`;
+        }
+      });
+    },
     goBack() {
       if (this.deep > 0) {
         this.deep--;
@@ -265,21 +275,13 @@ export default {
     },
   },
   watch: {
+    /**
+     * 處理safari window-h5定位問題
+     */
     deep: {
       handler(val) {
-        const { windowH5 } = this.$refs;
         if (val > 0) {
-          this.$nextTick(() => {
-            const { bottom } = windowH5.getBoundingClientRect();
-            const { innerHeight } = window;
-            if (innerHeight - bottom !== 0) {
-              windowH5.style.transform = `translateY(${
-                innerHeight - bottom
-              }px)`;
-
-              this.h5Distance = innerHeight - bottom;
-            }
-          });
+          this.updateH5Distance();
         }
       },
     },
@@ -337,22 +339,23 @@ export default {
      * 面跑掉，所以自訂義式見修復
      */
     // if (isSafari) {
-    //   const { container } = this.$refs;
-    //   //键盘弹出的事件处理
-    //   document.body.addEventListener("focusin", () => {
-    //     setTimeout(() => {
-    //       container.style.height = `${
-    //         window.visualViewport.height || window.innerHeight
-    //       }px`;
-    //       window.scrollTo(0, 0);
-    //     }, 100);
-    //   });
-    //   //键盘收起的事件处理
-    //   document.body.addEventListener("focusout", () => {
-    //     setTimeout(() => {
-    //       container.style.height = `100vh`;
-    //     }, 100);
-    //   });
+    const { container } = this.$refs;
+    //键盘弹出的事件处理
+    document.body.addEventListener("focusin", () => {
+      // setTimeout(() => {
+      //   container.style.height = `${
+      //     window.visualViewport.height || window.innerHeight
+      //   }px`;
+      //   // window.scrollTo(0, 0);
+      // }, 100);
+    });
+    //键盘收起的事件处理
+    document.body.addEventListener("focusout", () => {
+      // setTimeout(() => {
+      //   container.style.height = `100vh`;
+      // }, 100);
+      this.updateH5Distance();
+    });
     // }
 
     // 製作地圖名稱的雜湊表
