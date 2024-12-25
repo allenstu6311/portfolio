@@ -207,6 +207,8 @@ export default {
   methods: {
     updateH5Distance() {
       if (this.deep === 0) return;
+      this.renderH5 = true;
+
       this.$nextTick(() => {
         const { windowH5 } = this.$refs;
 
@@ -289,8 +291,6 @@ export default {
      */
     deep: {
       handler(val) {
-        console.log("val", val);
-
         if (val > 0) {
           this.updateH5Distance();
         }
@@ -366,7 +366,6 @@ export default {
       setTimeout(() => {
         window.scrollTo(0, 0);
         container.style.height = `100vh`;
-        this.renderH5 = true;
         this.updateH5Distance();
       }, 100);
     });
