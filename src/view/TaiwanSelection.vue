@@ -24,7 +24,7 @@
         <!-- 手機板查詢按鈕 -->
         <div class="">
           <button class="search-button" @click="isShow = true">
-            搜尋縣市 {{ h5Distance }}
+            搜尋縣市 {{ h5Distance.innerHeight }} {{ h5Distance.bottom }}
           </button>
         </div>
       </div>
@@ -210,14 +210,17 @@ export default {
         const { windowH5 } = this.$refs;
         const { bottom } = windowH5.getBoundingClientRect();
         const { innerHeight } = window;
-        let distance = innerHeight - bottom;
-        if (distance !== 0) {
-          // distance = distance < 0 ? distance * -1 : distance;
+        // let distance = innerHeight - bottom;
+        // if (distance !== 0) {
+        //   // distance = distance < 0 ? distance * -1 : distance;
 
-          windowH5.style.bottom = "85px";
-          windowH5.style.transform = `translateY(${innerHeight - bottom}px)`;
-        }
-        this.h5Distance = innerHeight - bottom;
+        //   windowH5.style.bottom = "85px";
+        //   windowH5.style.transform = `translateY(${innerHeight - bottom}px)`;
+        // }
+        this.h5Distance = {
+          innerHeight,
+          bottom,
+        };
       });
     },
     goBack() {
