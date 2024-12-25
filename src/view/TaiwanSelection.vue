@@ -210,9 +210,13 @@ export default {
         const { windowH5 } = this.$refs;
         const { bottom } = windowH5.getBoundingClientRect();
         const { innerHeight } = window;
-        if (innerHeight - bottom !== 0) {
-          windowH5.style.transform = `translateY(${innerHeight - bottom}px)`;
+        let distance = innerHeight - bottom;
+        if (distance !== 0) {
+          // distance = distance < 0 ? distance * -1 : distance;
+          // windowH5.style.transform = `translateY(${innerHeight - bottom}px)`;
+          windowH5.style.bottom = "85px";
         }
+        this.h5Distance = innerHeight - bottom;
       });
     },
     goBack() {
@@ -280,6 +284,8 @@ export default {
      */
     deep: {
       handler(val) {
+        console.log("val", val);
+
         if (val > 0) {
           this.updateH5Distance();
         }
