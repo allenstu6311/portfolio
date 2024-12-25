@@ -205,15 +205,6 @@ export default {
     };
   },
   methods: {
-    updateH5Distance() {
-      this.$nextTick(() => {
-        const { windowH5 } = this.$refs;
-        const { bottom } = windowH5.getBoundingClientRect();
-        const { innerHeight } = window;
-
-        this.h5Distance = innerHeight - bottom;
-      });
-    },
     goBack() {
       if (this.deep > 0) {
         this.deep--;
@@ -247,7 +238,6 @@ export default {
     updateDeep(val) {
       this.deep = val;
       this.searchStr = "";
-      this.updateH5Distance();
     },
     handleLocationMap(rows) {
       rows.forEach((items, index, array) => {
@@ -275,22 +265,24 @@ export default {
     },
   },
   watch: {
-    // deep: {
-    //   handler(val) {
-    //     const { windowH5 } = this.$refs;
-    //     if (val > 0) {
-    //       this.$nextTick(() => {
-    // const { bottom } = windowH5.getBoundingClientRect();
-    // const { innerHeight } = window;
-    //         if (innerHeight - bottom > 0) {
-    //           windowH5.style.transform = `translateY(-${
-    //             innerHeight - bottom
-    //           }px)`;
-    //         }
-    //       });
-    //     }
-    //   },
-    // },
+    deep: {
+      handler(val) {
+        const { windowH5 } = this.$refs;
+        if (val > 0) {
+          this.$nextTick(() => {
+            const { bottom } = windowH5.getBoundingClientRect();
+            const { innerHeight } = window;
+            if (innerHeight - bottom !== 0) {
+              windowH5.style.transform = `translateY(${
+                innerHeight - bottom
+              }px)`;
+
+              this.h5Distance = innerHeight - bottom;
+            }
+          });
+        }
+      },
+    },
   },
   computed: {
     currAreaSelection() {
