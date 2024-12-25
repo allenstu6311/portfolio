@@ -72,7 +72,7 @@
       />
     </div>
     <!-- 手機版視窗 -->
-    <div class="window-h5" v-show="deep > 0">
+    <div class="window-h5" v-show="deep > 0" ref="windowH5">
       <div class="introduce">
         <div class="accordion" id="accordionExample">
           <div class="accordion-item">
@@ -177,7 +177,7 @@ import Taiwan from "@/stories/TaiwanSelection/Taiwan.vue";
 import Selection from "@/stories/TaiwanSelection/Selection.vue";
 import "@/assets/js/bootstrap.min.js";
 import { pathname } from "../utils/TaiwanSelection";
-import { UAParser } from 'ua-parser-js';
+import { UAParser } from "ua-parser-js";
 
 const locationMap = {};
 
@@ -261,6 +261,24 @@ export default {
         });
     },
   },
+  watch: {
+    deep: {
+      handler(val) {
+        const { windowH5 } = this.$refs;
+        if (val > 0) {
+          this.$nextTick(() => {
+            const { bottom } = windowH5.getBoundingClientRect();
+            const { innerHeight } = window;
+            if (innerHeight - bottom > 0) {
+              windowH5.style.transform = `translateY(${
+                innerHeight - bottom
+              }px)`;
+            }
+          });
+        }
+      },
+    },
+  },
   computed: {
     currAreaSelection() {
       const { id } = this.locationData;
@@ -301,12 +319,12 @@ export default {
   },
   async mounted() {
     await this.getLocationData();
-    const ua = new UAParser();
-    console.log('ua',ua.getBrowser());
-    
+    // const ua = new UAParser();
+    // console.log("ua", ua.getBrowser());
+
     // const isIOSByUA = /iP(hone|od|ad)/i.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-    
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
     /**
      * safari瀏覽器在鍵盤出現時，
      * 會將視窗往上移動避免蓋住內
@@ -330,10 +348,6 @@ export default {
           container.style.height = `100vh`;
         }, 100);
       });
-    }
-
-    if (isSafari) {
-      document.querySelector(".window-h5").style.bottom = "86px";
     }
 
     // 製作地圖名稱的雜湊表
