@@ -270,7 +270,7 @@ export default {
             const { bottom } = windowH5.getBoundingClientRect();
             const { innerHeight } = window;
             if (innerHeight - bottom > 0) {
-              windowH5.style.transform = `translateY(${
+              windowH5.style.transform = `translateY(-${
                 innerHeight - bottom
               }px)`;
             }
