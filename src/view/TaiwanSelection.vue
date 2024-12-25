@@ -213,8 +213,9 @@ export default {
         let distance = innerHeight - bottom;
         if (distance !== 0) {
           // distance = distance < 0 ? distance * -1 : distance;
-          // windowH5.style.transform = `translateY(${innerHeight - bottom}px)`;
+
           windowH5.style.bottom = "85px";
+          windowH5.style.transform = `translateY(${innerHeight - bottom}px)`;
         }
         this.h5Distance = innerHeight - bottom;
       });
