@@ -23,9 +23,7 @@
         </div>
         <!-- 手機板查詢按鈕 -->
         <div class="">
-          <button class="search-button" @click="isShow = true">
-            搜尋縣市 {{ h5Distance.innerHeight }} {{ h5Distance.bottom }}
-          </button>
+          <button class="search-button" @click="isShow = true">搜尋縣市</button>
         </div>
       </div>
 
