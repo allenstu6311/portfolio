@@ -179,7 +179,6 @@ import Taiwan from "@/stories/TaiwanSelection/Taiwan.vue";
 import Selection from "@/stories/TaiwanSelection/Selection.vue";
 import "@/assets/js/bootstrap.min.js";
 import { pathname } from "../utils/TaiwanSelection";
-import { UAParser } from "ua-parser-js";
 
 const locationMap = {};
 
@@ -206,15 +205,17 @@ export default {
   },
   methods: {
     updateH5Distance() {
+      if (this.deep === 0) return;
       this.$nextTick(() => {
         const { windowH5 } = this.$refs;
+
         const { bottom } = windowH5.getBoundingClientRect();
         const { innerHeight, visualViewport } = window;
         let distance = innerHeight - bottom;
         if (distance !== 0) {
           // distance = distance < 0 ? distance * -1 : distance;
           // windowH5.style.bottom = "85px";
-          // windowH5.style.transform = `translateY(${distance}px)`;
+          windowH5.style.transform = `translateY(${distance}px)`;
         }
         this.h5Distance = {
           innerHeight,
