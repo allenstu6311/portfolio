@@ -300,7 +300,8 @@ export default {
   async mounted() {
     await this.getLocationData();
 
-    const isIOSByUA = /iP(hone|od|ad)/i.test(navigator.userAgent);
+    // const isIOSByUA = /iP(hone|od|ad)/i.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 
     /**
      * safari瀏覽器在鍵盤出現時，
@@ -308,7 +309,7 @@ export default {
      * 容，但不會自動復原，導致畫
      * 面跑掉，所以自訂義式見修復
      */
-    if (isIOSByUA) {
+    if (isSafari) {
       const { container } = this.$refs;
       //键盘弹出的事件处理
       document.body.addEventListener("focusin", () => {
@@ -327,7 +328,7 @@ export default {
       });
     }
 
-    if (isIOSByUA) {
+    if (isSafari) {
       document.querySelector(".window-h5").style.bottom = "86px";
     }
 
