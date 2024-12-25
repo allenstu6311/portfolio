@@ -23,7 +23,9 @@
         </div>
         <!-- 手機板查詢按鈕 -->
         <div class="">
-          <button class="search-button" @click="isShow = true">搜尋縣市</button>
+          <button class="search-button" @click="isShow = true">
+            搜尋縣市 {{ h5Distance }}
+          </button>
         </div>
       </div>
 
@@ -199,9 +201,19 @@ export default {
       selectionData: [],
       loading: true,
       isShow: false,
+      h5Distance: 0,
     };
   },
   methods: {
+    updateH5Distance() {
+      this.$nextTick(() => {
+        const { windowH5 } = this.$refs;
+        const { bottom } = windowH5.getBoundingClientRect();
+        const { innerHeight } = window;
+
+        this.h5Distance = innerHeight - bottom;
+      });
+    },
     goBack() {
       if (this.deep > 0) {
         this.deep--;
@@ -235,6 +247,7 @@ export default {
     updateDeep(val) {
       this.deep = val;
       this.searchStr = "";
+      this.updateH5Distance();
     },
     handleLocationMap(rows) {
       rows.forEach((items, index, array) => {
@@ -262,22 +275,22 @@ export default {
     },
   },
   watch: {
-    deep: {
-      handler(val) {
-        const { windowH5 } = this.$refs;
-        if (val > 0) {
-          this.$nextTick(() => {
-            const { bottom } = windowH5.getBoundingClientRect();
-            const { innerHeight } = window;
-            if (innerHeight - bottom > 0) {
-              windowH5.style.transform = `translateY(-${
-                innerHeight - bottom
-              }px)`;
-            }
-          });
-        }
-      },
-    },
+    // deep: {
+    //   handler(val) {
+    //     const { windowH5 } = this.$refs;
+    //     if (val > 0) {
+    //       this.$nextTick(() => {
+    // const { bottom } = windowH5.getBoundingClientRect();
+    // const { innerHeight } = window;
+    //         if (innerHeight - bottom > 0) {
+    //           windowH5.style.transform = `translateY(-${
+    //             innerHeight - bottom
+    //           }px)`;
+    //         }
+    //       });
+    //     }
+    //   },
+    // },
   },
   computed: {
     currAreaSelection() {
@@ -331,24 +344,24 @@ export default {
      * 容，但不會自動復原，導致畫
      * 面跑掉，所以自訂義式見修復
      */
-    if (isSafari) {
-      const { container } = this.$refs;
-      //键盘弹出的事件处理
-      document.body.addEventListener("focusin", () => {
-        setTimeout(() => {
-          container.style.height = `${
-            window.visualViewport.height || window.innerHeight
-          }px`;
-          window.scrollTo(0, 0);
-        }, 100);
-      });
-      //键盘收起的事件处理
-      document.body.addEventListener("focusout", () => {
-        setTimeout(() => {
-          container.style.height = `100vh`;
-        }, 100);
-      });
-    }
+    // if (isSafari) {
+    //   const { container } = this.$refs;
+    //   //键盘弹出的事件处理
+    //   document.body.addEventListener("focusin", () => {
+    //     setTimeout(() => {
+    //       container.style.height = `${
+    //         window.visualViewport.height || window.innerHeight
+    //       }px`;
+    //       window.scrollTo(0, 0);
+    //     }, 100);
+    //   });
+    //   //键盘收起的事件处理
+    //   document.body.addEventListener("focusout", () => {
+    //     setTimeout(() => {
+    //       container.style.height = `100vh`;
+    //     }, 100);
+    //   });
+    // }
 
     // 製作地圖名稱的雜湊表
     for (const id in locationMap) {
