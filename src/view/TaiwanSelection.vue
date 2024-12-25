@@ -177,6 +177,8 @@ import Taiwan from "@/stories/TaiwanSelection/Taiwan.vue";
 import Selection from "@/stories/TaiwanSelection/Selection.vue";
 import "@/assets/js/bootstrap.min.js";
 import { pathname } from "../utils/TaiwanSelection";
+import { UAParser } from 'ua-parser-js';
+
 const locationMap = {};
 
 export default {
@@ -299,10 +301,12 @@ export default {
   },
   async mounted() {
     await this.getLocationData();
-
+    const ua = new UAParser();
+    console.log('ua',ua.getBrowser());
+    
     // const isIOSByUA = /iP(hone|od|ad)/i.test(navigator.userAgent);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-
+    
     /**
      * safari瀏覽器在鍵盤出現時，
      * 會將視窗往上移動避免蓋住內
