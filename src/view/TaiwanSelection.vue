@@ -210,13 +210,13 @@ export default {
         const { windowH5 } = this.$refs;
         const { bottom } = windowH5.getBoundingClientRect();
         const { innerHeight } = window;
-        // let distance = innerHeight - bottom;
-        // if (distance !== 0) {
-        //   // distance = distance < 0 ? distance * -1 : distance;
+        let distance = innerHeight - bottom;
+        if (distance !== 0) {
+          // distance = distance < 0 ? distance * -1 : distance;
 
-        //   windowH5.style.bottom = "85px";
-        //   windowH5.style.transform = `translateY(${innerHeight - bottom}px)`;
-        // }
+          // windowH5.style.bottom = "85px";
+          windowH5.style.transform = `translateY(${distance}px)`;
+        }
         this.h5Distance = {
           innerHeight,
           bottom,
@@ -361,10 +361,10 @@ export default {
     });
     //键盘收起的事件处理
     document.body.addEventListener("focusout", () => {
-      // setTimeout(() => {
-      //   container.style.height = `100vh`;
-      // }, 100);
-      this.updateH5Distance();
+      setTimeout(() => {
+        container.style.height = `100vh`;
+        this.updateH5Distance();
+      }, 100);
     });
     // }
 
