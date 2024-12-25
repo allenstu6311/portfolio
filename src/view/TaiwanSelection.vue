@@ -25,7 +25,6 @@
         <div class="">
           <button class="search-button" @click="isShow = true">
             搜尋縣市 {{ h5Distance.innerHeight }} {{ h5Distance.bottom }}
-            {{ h5Distance.visualViewport?.height }}
           </button>
         </div>
       </div>
@@ -75,7 +74,7 @@
       />
     </div>
     <!-- 手機版視窗 -->
-    <div class="window-h5" v-show="deep > 0" ref="windowH5">
+    <div class="window-h5" v-if="deep > 0" ref="windowH5">
       <div class="introduce">
         <div class="accordion" id="accordionExample">
           <div class="accordion-item">
@@ -214,14 +213,12 @@ export default {
         let distance = innerHeight - bottom;
         if (distance !== 0) {
           // distance = distance < 0 ? distance * -1 : distance;
-
           // windowH5.style.bottom = "85px";
-          windowH5.style.transform = `translateY(${distance}px)`;
+          // windowH5.style.transform = `translateY(${distance}px)`;
         }
         this.h5Distance = {
           innerHeight,
           bottom,
-          visualViewport,
         };
       });
     },
