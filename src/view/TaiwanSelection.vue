@@ -74,7 +74,7 @@
       />
     </div>
     <!-- 手機版視窗 -->
-    <div class="window-h5" v-if="deep > 0" ref="windowH5">
+    <div class="window-h5" v-if="deep > 0 && renderH5" ref="windowH5">
       <div class="introduce">
         <div class="accordion" id="accordionExample">
           <div class="accordion-item">
@@ -201,6 +201,7 @@ export default {
       loading: true,
       isShow: false,
       h5Distance: 0,
+      renderH5: true,
     };
   },
   methods: {
@@ -361,9 +362,11 @@ export default {
     });
     //键盘收起的事件处理
     document.body.addEventListener("focusout", () => {
+      this.renderH5 = false;
       setTimeout(() => {
         window.scrollTo(0, 0);
         container.style.height = `100vh`;
+        this.renderH5 = true;
         this.updateH5Distance();
       }, 100);
     });
