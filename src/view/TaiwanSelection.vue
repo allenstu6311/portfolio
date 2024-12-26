@@ -72,7 +72,7 @@
       />
     </div>
     <!-- 手機版視窗 -->
-    <div class="window-h5" v-if="deep > 0 && renderH5" ref="windowH5">
+    <div class="window-h5" v-if="deep > 0" ref="windowH5">
       <div class="introduce">
         <div class="accordion" id="accordionExample">
           <div class="accordion-item">
@@ -198,30 +198,20 @@ export default {
       selectionData: [],
       loading: true,
       isShow: false,
-      h5Distance: 0,
-      renderH5: true,
     };
   },
   methods: {
     updateH5Distance() {
       if (this.deep === 0) return;
-      this.renderH5 = true;
-
       this.$nextTick(() => {
         const { windowH5 } = this.$refs;
-
         const { bottom } = windowH5.getBoundingClientRect();
-        const { innerHeight, visualViewport } = window;
-        let distance = innerHeight - bottom;
+        const { innerHeight } = window;
+        const distance = innerHeight - bottom;
+
         if (distance !== 0) {
-          // distance = distance < 0 ? distance * -1 : distance;
-          // windowH5.style.bottom = "85px";
           windowH5.style.transform = `translateY(${distance}px)`;
         }
-        this.h5Distance = {
-          innerHeight,
-          bottom,
-        };
       });
     },
     goBack() {
@@ -360,7 +350,6 @@ export default {
     });
     //键盘收起的事件处理
     document.body.addEventListener("focusout", () => {
-      this.renderH5 = false;
       setTimeout(() => {
         window.scrollTo(0, 0);
         container.style.height = `100vh`;
