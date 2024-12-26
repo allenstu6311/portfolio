@@ -353,16 +353,13 @@ export default {
 
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "src/assets/style/bootstrap.min.css";
+    link.href = `${pathname}/style/bootstrap.min.css`;
     document.head.appendChild(link);
 
     // 保存引用，方便在销毁组件时移除
     this.bootstrapLink = link;
-    console.log("link", link);
   },
   beforeUnmount() {
-    console.log("unmount");
-
     // 在组件卸载时移除样式
     if (this.bootstrapLink) {
       document.head.removeChild(this.bootstrapLink);
@@ -374,8 +371,6 @@ export default {
 @import "@/assets/style/TaiwanSelection/window.css";
 </style>
 <style lang="scss" scoped>
-// @import "@/assets/style/bootstrap.min.css";
-
 * {
   padding: 0;
   margin: 0;
@@ -498,32 +493,6 @@ body {
   align-items: center;
   z-index: 10;
   background-color: rgba(240, 248, 255, 0.24);
-}
-
-.search-button {
-  display: none;
-  color: #fff;
-  border-radius: 100px;
-  background-color: #5a6be3;
-  padding: 8px 12px;
-  font-size: 14px;
-  border: none;
-  margin-top: 10px;
-}
-
-.search-h5 {
-  display: none;
-  width: 100%;
-  height: 0;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background-color: #5a6be3;
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s;
-  overflow: hidden;
 }
 
 .close {
