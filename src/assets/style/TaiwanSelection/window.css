@@ -6,7 +6,7 @@
     top: 10%;
     right: 10px;
     background-color: #5a6be3;
-    padding: 16px 24px;
+    padding: 16px 24px !important;
 }
 
 .window-pc .title,
@@ -79,7 +79,7 @@ ul::-webkit-scrollbar {
     color: #fff;
     border-radius: 100px;
     background-color: #5a6be3;
-    padding: 8px 12px;
+    padding: 8px 12px !important;
     font-size: 14px;
     border: none;
     margin-top: 10px;
@@ -100,16 +100,30 @@ ul::-webkit-scrollbar {
     overflow: hidden;
 }
 
-/* 支援Safari 
-@supports (-webkit-touch-callout: none) {
-    .window-h5 {
-        bottom: 86px;
-    }
-} */
+.location-options {
+    max-height: 300px;
+    overflow-y: scroll;
+    background-color: #fff;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 90%;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.location-options li {
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.location-options li:hover {
+    color: #3b4f7d;
+}
 
 .accordion-item,
 .accordion-button {
-    background-color: transparent;
+    background-color: transparent !important;
 }
 
 @media screen and (max-width: 1024px) {
@@ -123,5 +137,17 @@ ul::-webkit-scrollbar {
 
     .desc {
         height: 250px;
+    }
+
+    .search-h5 {
+        display: flex;
+    }
+
+    .search-button {
+        display: block;
+    }
+
+    .close {
+        display: block;
     }
 }

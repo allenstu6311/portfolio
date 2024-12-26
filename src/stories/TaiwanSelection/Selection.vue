@@ -32,6 +32,13 @@ const props = defineProps({
 });
 </script>
 <style lang="scss" scoped>
+p {
+  margin: 0;
+}
+.selection {
+  padding: 5px 0;
+  margin: 5px 0;
+}
 .selection-item {
   display: flex;
   justify-content: space-between;
@@ -45,8 +52,8 @@ const props = defineProps({
 
 @media screen and (max-width: 1024px) {
   .selection {
-    border-top: 1px solid #c0c6d0;
-    border-bottom: 1px solid #c0c6d0;
+    border-top: 1px solid #c0c6d0 !important;
+    border-bottom: 1px solid #c0c6d0 !important;
     padding: 5px 0;
     margin: 5px 0;
   }

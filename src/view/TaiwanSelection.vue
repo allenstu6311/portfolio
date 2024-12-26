@@ -367,9 +367,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
-@import "@/assets/style/TaiwanSelection/window.css";
-</style>
+
 <style lang="scss" scoped>
 * {
   padding: 0;
@@ -458,31 +456,31 @@ body {
   height: 100vh;
 }
 
-.wrap {
+:deep(.wrap) {
   background-color: rgba(244, 244, 244, 0.9);
   margin-bottom: 20px;
   border-radius: 8px;
   padding: 16px;
 }
-.location-options {
-  max-height: 300px;
-  overflow-y: scroll;
-  background-color: #fff;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 90%;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
+// .location-options {
+//   max-height: 300px;
+//   overflow-y: scroll;
+//   background-color: #fff;
+//   position: absolute;
+//   width: 100%;
+//   left: 0;
+//   top: 90%;
+//   border-bottom-left-radius: 8px;
+//   border-bottom-right-radius: 8px;
+// }
 
-.location-options li {
-  cursor: pointer;
-  font-weight: 500;
-}
-.location-options li:hover {
-  color: #3b4f7d;
-}
+// .location-options li {
+//   cursor: pointer;
+//   font-weight: 500;
+// }
+// .location-options li:hover {
+//   color: #3b4f7d;
+// }
 
 .custom-spinner {
   width: 100%;
@@ -515,14 +513,8 @@ body {
   .control-box {
     top: 50px;
   }
-  .search-button {
-    display: block;
-  }
-  .search-h5 {
-    display: flex;
-  }
-  .close {
-    display: block;
-  }
 }
+</style>
+<style lang="scss">
+@import "@/assets/style/TaiwanSelection/window.css";
 </style>
