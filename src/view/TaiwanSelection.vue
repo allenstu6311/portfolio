@@ -462,25 +462,6 @@ body {
   border-radius: 8px;
   padding: 16px;
 }
-// .location-options {
-//   max-height: 300px;
-//   overflow-y: scroll;
-//   background-color: #fff;
-//   position: absolute;
-//   width: 100%;
-//   left: 0;
-//   top: 90%;
-//   border-bottom-left-radius: 8px;
-//   border-bottom-right-radius: 8px;
-// }
-
-// .location-options li {
-//   cursor: pointer;
-//   font-weight: 500;
-// }
-// .location-options li:hover {
-//   color: #3b4f7d;
-// }
 
 .custom-spinner {
   width: 100%;
@@ -491,19 +472,6 @@ body {
   align-items: center;
   z-index: 10;
   background-color: rgba(240, 248, 255, 0.24);
-}
-
-.close {
-  display: none;
-  position: absolute;
-  top: 10%;
-  right: 10%;
-  width: 22px;
-  height: 22px;
-}
-.close img {
-  width: 100%;
-  height: 100%;
 }
 
 @media screen and (max-width: 1024px) {
