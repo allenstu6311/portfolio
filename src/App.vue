@@ -1,7 +1,8 @@
 <script setup></script>
 
 <template>
-  <!-- <router-link to="TaiwanSelection">TaiwanSelection</router-link> -->
+  <!-- <router-link to="TaiwanSelection">TaiwanSelection</router-link> /
+  <router-link to="Test">Test</router-link> -->
   <router-view></router-view>
 </template>
 

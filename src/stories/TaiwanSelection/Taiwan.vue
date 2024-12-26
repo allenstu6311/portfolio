@@ -416,9 +416,6 @@ export default {
       return fetch(
         `${pathname}/data/TaiwanSelection/topoJson/selection/${id}.json`
       ).then((res) => res.json());
-      // .then((data) => {
-      //   this.updateSelectionData(data);
-      // });
     },
     updateSelectionData(data) {
       this.selectionData = this.selectionData.concat(data);

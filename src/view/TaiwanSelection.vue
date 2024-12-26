@@ -198,6 +198,7 @@ export default {
       selectionData: [],
       loading: true,
       isShow: false,
+      bootstrapLink: "",
     };
   },
   methods: {
@@ -325,11 +326,6 @@ export default {
   },
   async mounted() {
     await this.getLocationData();
-    // const ua = new UAParser();
-    // console.log("ua", ua.getBrowser());
-
-    // const isIOSByUA = /iP(hone|od|ad)/i.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     /**
      * safari瀏覽器在鍵盤出現時，
@@ -337,17 +333,7 @@ export default {
      * 容，但不會自動復原，導致畫
      * 面跑掉，所以自訂義式見修復
      */
-    // if (isSafari) {
     const { container } = this.$refs;
-    //键盘弹出的事件处理
-    document.body.addEventListener("focusin", () => {
-      // setTimeout(() => {
-      //   container.style.height = `${
-      //     window.visualViewport.height || window.innerHeight
-      //   }px`;
-      //   // window.scrollTo(0, 0);
-      // }, 100);
-    });
     //键盘收起的事件处理
     document.body.addEventListener("focusout", () => {
       setTimeout(() => {
@@ -356,7 +342,6 @@ export default {
         this.updateH5Distance();
       }, 100);
     });
-    // }
 
     // 製作地圖名稱的雜湊表
     for (const id in locationMap) {
@@ -365,12 +350,31 @@ export default {
         id,
       });
     }
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "src/assets/style/bootstrap.min.css";
+    document.head.appendChild(link);
+
+    // 保存引用，方便在销毁组件时移除
+    this.bootstrapLink = link;
+    console.log("link", link);
+  },
+  beforeUnmount() {
+    console.log("unmount");
+
+    // 在组件卸载时移除样式
+    if (this.bootstrapLink) {
+      document.head.removeChild(this.bootstrapLink);
+    }
   },
 };
 </script>
 <style lang="scss">
-@import "@/assets/style/bootstrap.min.css";
 @import "@/assets/style/TaiwanSelection/window.css";
+</style>
+<style lang="scss" scoped>
+// @import "@/assets/style/bootstrap.min.css";
 
 * {
   padding: 0;
@@ -379,6 +383,7 @@ export default {
   list-style: none;
   box-sizing: border-box;
 }
+
 p,
 ul,
 h2 {

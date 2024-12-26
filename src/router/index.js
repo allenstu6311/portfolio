@@ -4,6 +4,7 @@ import {
   createWebHistory,
 } from "vue-router";
 import TaiwanSelection from "@/view/TaiwanSelection.vue";
+import Test from "@/view/Test.vue";
 
 const pathname = process.env.NODE_ENV === "production" ? "portfolio" : "";
 
@@ -14,6 +15,10 @@ const routes = [
       {
         path: "TaiwanSelection",
         component: TaiwanSelection,
+      },
+      {
+        path: "Test",
+        component: Test,
       },
     ],
   },
