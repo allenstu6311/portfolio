@@ -456,7 +456,7 @@ body {
   height: 100vh;
 }
 
-:deep(.wrap) {
+.wrap {
   background-color: rgba(244, 244, 244, 0.9);
   margin-bottom: 20px;
   border-radius: 8px;
@@ -483,6 +483,6 @@ body {
   }
 }
 </style>
-<style lang="scss">
+<style lang="scss" scoped>
 @import "@/assets/style/TaiwanSelection/window.css";
 </style>

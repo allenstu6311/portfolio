@@ -50,6 +50,17 @@ p {
   gap: 8px;
 }
 
+.party {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 50%;
+  color: #fff;
+}
+
 @media screen and (max-width: 1024px) {
   .selection {
     border-top: 1px solid #c0c6d0 !important;
