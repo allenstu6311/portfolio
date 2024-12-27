@@ -98,33 +98,11 @@ export default {
     },
   },
   methods: {
-    async initMap(init) {
-      const { svg } = this.$refs;
-
+    async initEnv(init) {
       if (init) {
-        this.d3Svg = d3.select(svg);
-
-        this.mapGroup = this.d3Svg
-          .append("g")
-          .attr("class", "map-group")
-          .attr("translate", "map");
-
-        this.countrySvg = this.mapGroup
-          .append("g")
-          .attr("class", "selected-county-country");
-        this.townSvg = this.mapGroup
-          .append("g")
-          .attr("class", "selected-county-towns");
-        this.villageSvg = this.mapGroup
-          .append("g")
-          .attr("class", "selected-county-villages");
-
+        this.initMap();
         this.areaData = await this.getMapData(); //獲得第一層圖層
         const { counties } = this.areaData.objects;
-
-        // for (let i = 0; i < counties.geometries.length; i++) {
-        //   await this.getSelectionData(counties.geometries[i].id);
-        // }
 
         const promises = counties.geometries.map((geometry) => {
           return this.getSelectionData(geometry.id);
@@ -139,6 +117,23 @@ export default {
         this.appendMap(0);
       }
       this.moveMapInCenter();
+    },
+    initMap() {
+      const { svg } = this.$refs;
+      this.d3Svg = d3.select(svg);
+
+      this.mapGroup = this.d3Svg.append("g").attr("class", "map-group");
+      // .attr("translate", "map");
+
+      this.countrySvg = this.mapGroup
+        .append("g")
+        .attr("class", "selected-county-country");
+      this.townSvg = this.mapGroup
+        .append("g")
+        .attr("class", "selected-county-towns");
+      this.villageSvg = this.mapGroup
+        .append("g")
+        .attr("class", "selected-county-villages");
     },
     initD3js() {
       if (!this.zoom) {
@@ -162,6 +157,8 @@ export default {
       this.mapGroup.attr("stroke-width", 1 / transform.k);
     },
     moveMapInCenter() {
+      console.log("this.mapGroup", this.mapGroup);
+
       const dom = this.mapGroup.node();
       const { zoomLevel } = getBBoxCenter(this.mapGroup.node());
       const { translateX, translateY } = getTransform(dom, zoomLevel);
@@ -453,7 +450,7 @@ export default {
   mounted() {
     window.addEventListener("resize", async () => {
       this.allowZoom = true;
-      this.initMap();
+      this.initEnv();
 
       const length = this.deepVal;
       for (let i = 0; i <= length; i++) {
@@ -463,7 +460,7 @@ export default {
     });
 
     this.$nextTick(async () => {
-      this.initMap(true);
+      this.initEnv(true);
       this.initD3js();
     });
   },

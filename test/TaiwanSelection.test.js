@@ -11,13 +11,16 @@ import {
 import TaiwanSelection from "@/stories/TaiwanSelection/Taiwan.vue";
 import * as d3 from "d3";
 import * as topojson from "topojson";
+import { JSDOM } from "jsdom";
 
 describe("TaiwanSelection.vue", () => {
   let wrapper;
   beforeAll(() => {
     // Mock initMap 方法，避免執行真實邏輯
-    TaiwanSelection.methods.initMap = vi.fn();
-    TaiwanSelection.methods.initD3js = vi.fn();
+    // TaiwanSelection.methods.initMap = vi.fn();
+    // TaiwanSelection.methods.initD3js = vi.fn();
+
+    TaiwanSelection.mounted = vi.fn();
   });
 
   beforeEach(() => {
@@ -69,5 +72,18 @@ describe("TaiwanSelection.vue", () => {
     ];
 
     expect(calauteSelectionRate(id, data)).toBe("rgb(88, 220, 152)");
+  });
+
+  // 初始化地圖
+  it("initMap", async () => {
+    const { initMap } = wrapper.vm;
+    await initMap(true);
+    const { d3Svg, mapGroup, countrySvg, townSvg, villageSvg } = wrapper.vm;
+
+    expect(d3Svg.node().tagName).toBe("svg");
+    expect(mapGroup.attr("class")).toBe("map-group");
+    expect(countrySvg.attr("class")).toBe("selected-county-country");
+    expect(townSvg.attr("class")).toBe("selected-county-towns");
+    expect(villageSvg.attr("class")).toBe("selected-county-villages");
   });
 });
