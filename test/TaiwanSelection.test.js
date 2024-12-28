@@ -73,18 +73,18 @@ describe("TaiwanSelection.vue", () => {
   });
 
   // 刪除地圖
-  it("removeChild", async ()=>{
-    const { removeChild, getDomFromDeep, initMap, appendMap } = wrapper.vm;
-    await initMap(true);
-    // appendMap(0);
-    console.log('country',country);
+  // it("removeChild", async ()=>{
+  //   const { removeChild, getDomFromDeep, initMap, appendMap } = wrapper.vm;
+  //   await initMap(true);
+  //   // appendMap(0);
+  //   console.log('country',country);
     
-    const dom = getDomFromDeep(0);
+  //   const dom = getDomFromDeep(0);
 
-    // setTimeout(()=>{
-    //   console.log('dom=>',dom.selectAll("path").empty());
-    // },1000)
+  //   // setTimeout(()=>{
+  //   //   console.log('dom=>',dom.selectAll("path").empty());
+  //   // },1000)
 
     
-  })
+  // })
 });

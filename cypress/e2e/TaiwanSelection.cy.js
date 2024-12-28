@@ -13,7 +13,6 @@ describe("選情地圖移動測試", () => {
     cy.wait(Array(22).fill("@getData"))// 一次性等待所有 22 次請求完成
 
     let currDeep = 0;
-
     function reset() {
       for (let i = 0; i < currDeep; i++) {
         cy.get(".back").click();
