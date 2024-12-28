@@ -12,6 +12,8 @@ import TaiwanSelection from "@/stories/TaiwanSelection/Taiwan.vue";
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import { JSDOM } from "jsdom";
+import { nextTick } from "vue";
+import country from "../public/data/TaiwanSelection/topoJson/towns-mercator.json"
 
 describe("TaiwanSelection.vue", () => {
   let wrapper;
@@ -86,4 +88,20 @@ describe("TaiwanSelection.vue", () => {
     expect(townSvg.attr("class")).toBe("selected-county-towns");
     expect(villageSvg.attr("class")).toBe("selected-county-villages");
   });
+
+  // 刪除地圖
+  it("removeChild", async ()=>{
+    const { removeChild, getDomFromDeep, initMap, appendMap } = wrapper.vm;
+    await initMap(true);
+    // appendMap(0);
+    console.log('country',country);
+    
+    const dom = getDomFromDeep(0);
+
+    // setTimeout(()=>{
+    //   console.log('dom=>',dom.selectAll("path").empty());
+    // },1000)
+
+    
+  })
 });

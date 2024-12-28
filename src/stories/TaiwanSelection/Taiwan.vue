@@ -104,16 +104,14 @@ export default {
         this.areaData = await this.getMapData(); //獲得第一層圖層
         const { counties } = this.areaData.objects;
 
+        // 等待所有請求完成
         const promises = counties.geometries.map((geometry) => {
           return this.getSelectionData(geometry.id);
         });
-
-        // 等待所有請求完成
         const results = await Promise.all(promises);
-
         // 批量更新數據
         this.selectionData = results.flat(); // 將所有結果展平合併
-
+        // 產生地圖
         this.appendMap(0);
       }
       this.moveMapInCenter();
@@ -121,9 +119,7 @@ export default {
     initMap() {
       const { svg } = this.$refs;
       this.d3Svg = d3.select(svg);
-
       this.mapGroup = this.d3Svg.append("g").attr("class", "map-group");
-      // .attr("translate", "map");
 
       this.countrySvg = this.mapGroup
         .append("g")
@@ -157,8 +153,6 @@ export default {
       this.mapGroup.attr("stroke-width", 1 / transform.k);
     },
     moveMapInCenter() {
-      console.log("this.mapGroup", this.mapGroup);
-
       const dom = this.mapGroup.node();
       const { zoomLevel } = getBBoxCenter(this.mapGroup.node());
       const { translateX, translateY } = getTransform(dom, zoomLevel);
@@ -191,7 +185,6 @@ export default {
             this.villageDataList[id] = data;
             this.$emit("update:loading", false);
           }
-
           return data || {};
         });
     },
@@ -236,9 +229,12 @@ export default {
         : data; // deep === 0
     },
     appendMap(deep, id) {
-      const path = d3.geoPath();
       const dom = this.getDomFromDeep(deep);
       const mapData = this.getFeatureById(deep, id);
+      this.genMap(deep,dom, mapData);
+    },
+    genMap(deep, dom, mapData){
+      const path = d3.geoPath();
 
       dom
         .selectAll("path")
@@ -365,13 +361,18 @@ export default {
     },
     getDomFromDeep(deep) {
       const useDeep = deep === undefined ? this.deepVal : deep;
+      console.log('this.countrySvg node',this.countrySvg.node());
+      
+      setTimeout(()=>{
+        console.log('this.countrySvg', this.countrySvg.selectAll('path').empty());
+      },1000)
+  
+      
       switch (useDeep) {
         case 0:
           return this.countrySvg;
         case 1:
           return this.townSvg;
-        case 2:
-          return this.villageSvg;
         default:
           return this.villageSvg;
       }
@@ -467,9 +468,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-// @import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css";
-// @import "@/assets/style/TaiwanSelection/window.css";
-
 svg {
   width: 100%;
   height: 100vh;
