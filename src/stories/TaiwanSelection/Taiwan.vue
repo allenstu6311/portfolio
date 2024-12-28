@@ -52,12 +52,6 @@ export default {
         dom: "",
         textContent: "",
       },
-      defaultInfo: {
-        name: "尚無資料",
-        dom: "",
-        id: "",
-        textContent: "尚無資料",
-      },
       d3Svg: "",
       countrySvg: "",
       mapGroup: "",
@@ -66,7 +60,6 @@ export default {
       areaData: "",
       villageData: "",
       villageDataList: {},
-      isMapClick: false,
       selectionData: [],
       selectionInfo: {},
       zoom: null,
@@ -111,7 +104,8 @@ export default {
         // 批量更新數據
         this.selectionData = results.flat(); // 將所有結果展平合併
         // 產生地圖
-        this.appendMap(0);
+        const { dom, mapData } = this.getGenMapData(0);
+        this.appendMap(dom, mapData);
       }
       this.moveMapInCenter();
     },
@@ -227,14 +221,14 @@ export default {
         ? data.filter((item) => item.id.slice(0, id.length).includes(id))
         : data; // deep === 0
     },
-    appendMap(deep, id) {
+    getGenMapData(deep, id) {
       const dom = this.getDomFromDeep(deep);
       const mapData = this.getFeatureById(deep, id);
-      this.genMap(deep,dom, mapData);
+      return { dom, mapData };
     },
-    genMap(deep, dom, mapData){
+    appendMap(dom, mapData) {
       const path = d3.geoPath();
-
+      const currDeep = this.deepVal; //避免傳參考影響每層的deep值
       dom
         .selectAll("path")
         .data(mapData)
@@ -250,14 +244,13 @@ export default {
           if (!selectData.length) return "lightblue";
           return this.calauteSelectionRate(id, selectData);
         })
-        .attr("stroke-width", `0.${deep === 0 ? 3 : 1}`)
+        .attr("stroke-width", `0.${currDeep === 0 ? 3 : 1}`)
         .on("click", async (e, data) => {
           //因為要設定到下一層所以+1
-          this.mapOnClick(deep + 1, data);
+          this.mapOnClick(currDeep + 1, data);
         });
     },
     async mapOnClick(deep, data) {
-      this.isMapClick = true;
       const id = data.id ? data.id : data.properties.VILLCODE;
       await this.updateCurrInfo(id, deep);
 
@@ -268,15 +261,11 @@ export default {
         this.townSvg.selectAll("path").remove();
         this.villageSvg.selectAll("path").remove();
       }
-
+      
       if (deep === this.deepVal) {
         this.updateDeepVal(deep, this.deepVal);
       }
       this.$emit("updateDeep", deep);
-
-      this.$nextTick(() => {
-        this.isMapClick = false;
-      });
     },
     async updateCurrInfo(id, deep) {
       const currInfo = this.getInfoFromDeep(deep);
@@ -298,7 +287,8 @@ export default {
       this.$emit("getLocationData", currInfo);
 
       if (newDeep < 3) {
-        this.appendMap(newDeep, currInfo.id);
+        const { dom, mapData } = this.getGenMapData(newDeep, currInfo.id);
+        this.appendMap(dom, mapData);
       }
       if (newDeep === 0) {
         this.allowZoom = true;
@@ -360,13 +350,6 @@ export default {
     },
     getDomFromDeep(deep) {
       const useDeep = deep === undefined ? this.deepVal : deep;
-      console.log('this.countrySvg node',this.countrySvg.node());
-      
-      setTimeout(()=>{
-        console.log('this.countrySvg', this.countrySvg.selectAll('path').empty());
-      },1000)
-  
-      
       switch (useDeep) {
         case 0:
           return this.countrySvg;

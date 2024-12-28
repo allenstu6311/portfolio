@@ -22,12 +22,12 @@ describe("選情地圖移動測試", () => {
       currDeep = 0;
     }
 
-    function moveTest(taraget, deep) {
+    function moveTest(taraget, deep, specifyIdx = 0) {
       currDeep = deep;
       cy.get(taraget)
         .children()
         .each((item, index) => {
-          if (index === 0) {
+          if (index === specifyIdx) {
             cy.wrap(item).click({ force: true });
             cy.wait(animationTime);
           }
@@ -42,8 +42,13 @@ describe("選情地圖移動測試", () => {
     cy.wait(animationTime);
     // pc測試
     moveTest(".map-group .selected-county-country", 1);
+    moveTest(".map-group .selected-county-country", 1, 3);
+
     moveTest(".map-group .selected-county-towns", 2);
+    moveTest(".map-group .selected-county-towns", 2, 1);
+
     moveTest(".map-group .selected-county-villages", 3);
+    moveTest(".map-group .selected-county-villages", 3,5);
     reset();
 
     cy.get(".window-pc input").type("桃園市");

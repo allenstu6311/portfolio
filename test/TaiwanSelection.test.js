@@ -21,7 +21,6 @@ describe("TaiwanSelection.vue", () => {
     // Mock initMap 方法，避免執行真實邏輯
     // TaiwanSelection.methods.initMap = vi.fn();
     // TaiwanSelection.methods.initD3js = vi.fn();
-
     TaiwanSelection.mounted = vi.fn();
   });
 
@@ -32,7 +31,6 @@ describe("TaiwanSelection.vue", () => {
   afterEach(() => {
     vi.restoreAllMocks(); // 清理所有 Mock
   });
-
 
   // 計算支持率
   it("calauteSelectionRate", () => {
