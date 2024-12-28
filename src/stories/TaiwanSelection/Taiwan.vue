@@ -159,7 +159,7 @@ export default {
           d3.zoomIdentity.translate(translateX, translateY).scale(zoomLevel)
         )
         .on("end", () => {
-          this.allowZoom = false;
+          this.allowZoom = false; // 初始化不允許滑鼠移動地圖及縮放
           this.$emit("update:loading", false);
         });
     },
