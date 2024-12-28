@@ -33,21 +33,6 @@ describe("TaiwanSelection.vue", () => {
     vi.restoreAllMocks(); // 清理所有 Mock
   });
 
-  // 合併選舉資料
-  it("updateSelectionData", () => {
-    const { updateSelectionData } = wrapper.vm;
-    const mockData = [{ id: 1, name: "Test County" }];
-
-    updateSelectionData(mockData);
-    var { selectionData } = wrapper.vm;
-    expect(selectionData).toEqual(mockData);
-
-    wrapper.vm.selectionData = [];
-
-    updateSelectionData([]);
-    var { selectionData } = wrapper.vm;
-    expect(selectionData).toEqual([]);
-  });
 
   // 計算支持率
   it("calauteSelectionRate", () => {

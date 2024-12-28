@@ -79,7 +79,6 @@ export default {
       handler(newVal, oldVal) {
         this.updateDeepVal(newVal, oldVal);
       },
-      deep: true,
     },
     currAddress(val) {
       this.$emit("updateAddress", val);
@@ -414,9 +413,6 @@ export default {
       return fetch(
         `${pathname}/data/TaiwanSelection/topoJson/selection/${id}.json`
       ).then((res) => res.json());
-    },
-    updateSelectionData(data) {
-      this.selectionData = this.selectionData.concat(data);
     },
     calauteSelectionRate(id, data) {
       let cand_1 = 0; // 民眾黨
