@@ -261,8 +261,8 @@ export default {
           //因為要設定到下一層所以+1
           this.mapOnClick(currDeep + 1, data);
         });
-
-      if (typeof bootstrap !== undefined) {
+      console.log("bootstrap", typeof bootstrap);
+      if (typeof bootstrap !== "undefined") {
         let tooltipTriggerList = [].slice.call(
           document.querySelectorAll('[data-bs-toggle="tooltip"]')
         );
