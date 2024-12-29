@@ -13,7 +13,6 @@ import * as topojson from "topojson";
 import { pathname } from "../../utils/TaiwanSelection";
 // import bootstrap from "@/assets/js/bootstrap.min.js";
 // import "@/assets/js/bootstrap.min.js";
-console.log("bootstrap", bootstrap);
 
 export default {
   props: {
@@ -263,22 +262,23 @@ export default {
           this.mapOnClick(currDeep + 1, data);
         });
 
-      var tooltipTriggerList = [].slice.call(
-        document.querySelectorAll('[data-bs-toggle="tooltip"]')
-      );
-      console.log("bootstrap", bootstrap);
+      if (typeof bootstrap !== undefined) {
+        let tooltipTriggerList = [].slice.call(
+          document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
 
-      tooltipTriggerList.map(function (tooltipTriggerEl) {
-        const tooltipInstance = new bootstrap.Tooltip(tooltipTriggerEl);
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+          const tooltipInstance = new bootstrap.Tooltip(tooltipTriggerEl);
 
-        tooltipTriggerEl.addEventListener("click", () => {
-          tooltipInstance.hide();
+          tooltipTriggerEl.addEventListener("click", () => {
+            tooltipInstance.hide();
+          });
+          tooltipTriggerEl.addEventListener("dragStart", () => {
+            tooltipInstance.hide();
+          });
+          return tooltipInstance;
         });
-        tooltipTriggerEl.addEventListener("dragStart", () => {
-          tooltipInstance.hide();
-        });
-        return tooltipInstance;
-      });
+      }
     },
     async mapOnClick(deep, data) {
       const id = data.id ? data.id : data.properties.VILLCODE;
