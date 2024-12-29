@@ -11,8 +11,9 @@ import {
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import { pathname } from "../../utils/TaiwanSelection";
-// import * as bootstrap from "@/assets/js/bootstrap.min.js";
+// import bootstrap from "@/assets/js/bootstrap.min.js";
 // import "@/assets/js/bootstrap.min.js";
+console.log("bootstrap", bootstrap);
 
 export default {
   props: {
@@ -261,6 +262,7 @@ export default {
           //因為要設定到下一層所以+1
           this.mapOnClick(currDeep + 1, data);
         });
+
       var tooltipTriggerList = [].slice.call(
         document.querySelectorAll('[data-bs-toggle="tooltip"]')
       );
