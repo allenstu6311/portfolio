@@ -1,4 +1,5 @@
 <template>
+
   <div class="bg"></div>
   <div class="custom-container" ref="container">
     <!-- loading -->
@@ -69,6 +70,7 @@
         @update-deep="updateDeep"
         @get-location-data="(val) => (locationData = val)"
         @update-selection-info="(val) => (selectionInfo = val)"
+        :locationMap="locationMap"
       />
     </div>
     <!-- 手機版視窗 -->
@@ -178,8 +180,6 @@ import Selection from "@/stories/TaiwanSelection/Selection.vue";
 import "@/assets/js/bootstrap.min.js";
 import { pathname } from "../utils/TaiwanSelection";
 
-const locationMap = {};
-
 export default {
   components: {
     Taiwan,
@@ -198,6 +198,7 @@ export default {
       loading: true,
       isShow: false,
       bootstrapLink: "",
+      locationMap: {},
     };
   },
   methods: {
@@ -238,9 +239,9 @@ export default {
       if (!id) return "";
       const { countryId, townId } = this.findParentId(id);
 
-      const countryName = locationMap[countryId] || "";
-      const townName = locationMap[townId] || "";
-      const areaName = locationMap[id];
+      const countryName = this.locationMap[countryId] || "";
+      const townName = this.locationMap[townId] || "";
+      const areaName = this.locationMap[id];
 
       return countryName + townName + areaName;
     },
@@ -248,6 +249,7 @@ export default {
       this.deep = val;
       this.searchStr = "";
     },
+    // 製作地圖名稱的雜湊表
     handleLocationMap(rows) {
       rows.forEach((items, index, array) => {
         const item = items.split(",");
@@ -255,21 +257,31 @@ export default {
         const townId = item[1];
         const villageId = item[2];
 
-        if (!locationMap.hasOwnProperty(countryId)) {
-          locationMap[countryId] = item[0 + 3];
+        if (!this.locationMap.hasOwnProperty(countryId)) {
+          this.locationMap[countryId] = item[3];
         }
-        if (!locationMap.hasOwnProperty(townId)) {
-          locationMap[townId] = item[1 + 3];
+        if (!this.locationMap.hasOwnProperty(townId)) {
+          this.locationMap[townId] = item[4];
         }
-        locationMap[villageId] = item[2 + 3];
+        this.locationMap[villageId] = item[5];
       });
     },
-    async getLocationData() {
+    // 製作地圖名稱的選項
+    handleLocationOption(mapperData) {
+      for (const id in mapperData) {
+        this.locationOptions.push({
+          name: this.mappingName(id),
+          id,
+        });
+      }
+    },
+    async getLocationCode() {
       await fetch(`${pathname}/data/TaiwanSelection/csv/area-code.csv`)
         .then((res) => res.text())
         .then((text) => {
           const rows = text.split("\n").slice(1);
           this.handleLocationMap(rows);
+          this.handleLocationOption(this.locationMap);
         });
     },
   },
@@ -324,8 +336,7 @@ export default {
     },
   },
   async mounted() {
-    await this.getLocationData();
-
+    await this.getLocationCode();
     /**
      * safari瀏覽器在鍵盤出現時，
      * 會將視窗往上移動避免蓋住內
@@ -341,14 +352,6 @@ export default {
         this.updateH5Distance();
       }, 100);
     });
-
-    // 製作地圖名稱的雜湊表
-    for (const id in locationMap) {
-      this.locationOptions.push({
-        name: this.mappingName(id),
-        id,
-      });
-    }
 
     const link = document.createElement("link");
     link.rel = "stylesheet";

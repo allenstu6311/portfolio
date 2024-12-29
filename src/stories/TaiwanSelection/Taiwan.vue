@@ -26,6 +26,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    locationMap: {
+      type: Object,
+      default: {},
+    },
   },
   emits: [
     "updateDeep",
@@ -130,6 +134,7 @@ export default {
               this.zoomed(d, data);
             }
           });
+
         // 註冊zoom事件
         this.d3Svg.call(this.zoom);
       }
@@ -233,7 +238,7 @@ export default {
         .append("path")
         .attr("d", path)
         .attr("stroke", "#fff")
-        .attr("fill", (data) => {          
+        .attr("fill", (data) => {
           const id = data.id ? data.id : data.properties.VILLCODE;
           const selectData = this.selectionData.filter((item) =>
             item.village_id.startsWith(id)
@@ -242,10 +247,33 @@ export default {
           return this.calauteSelectionRate(id, selectData);
         })
         .attr("stroke-width", `0.${currDeep === 0 ? 3 : 1}`)
+        .attr("data-bs-placement", "top")
+        .attr("data-bs-toggle", "tooltip")
+        .attr("data-bs-html", true)
+        .attr("title", (data) => {
+          const id = data.id ? data.id : data.properties.VILLCODE;
+          return this.locationMap[id];
+        })
+        .attr("class", "custom-tooltip")
         .on("click", async (e, data) => {
           //因為要設定到下一層所以+1
           this.mapOnClick(currDeep + 1, data);
-        })        
+        })
+      var tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        const tooltipInstance = new bootstrap.Tooltip(tooltipTriggerEl);
+
+        tooltipTriggerEl.addEventListener('click', () => {
+          tooltipInstance.hide();
+        });
+        tooltipTriggerEl.addEventListener('dragStart', () => {
+          tooltipInstance.hide();
+        });
+        return tooltipInstance
+      });
+
     },
     async mapOnClick(deep, data) {
       const id = data.id ? data.id : data.properties.VILLCODE;
@@ -258,7 +286,7 @@ export default {
         this.townSvg.selectAll("path").remove();
         this.villageSvg.selectAll("path").remove();
       }
-      
+
       if (deep === this.deepVal) {
         this.updateDeepVal(deep, this.deepVal);
       }
@@ -446,5 +474,10 @@ export default {
 svg {
   width: 100%;
   height: 100vh;
+}
+</style>
+<style>
+.custom-tooltip {
+  outline: none;
 }
 </style>
