@@ -1,5 +1,4 @@
 <template>
-
   <div class="bg"></div>
   <div class="custom-container" ref="container">
     <!-- loading -->

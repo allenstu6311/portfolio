@@ -11,6 +11,8 @@ import {
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import { pathname } from "../../utils/TaiwanSelection";
+// import * as bootstrap from "@/assets/js/bootstrap.min.js";
+import "@/assets/js/bootstrap.min.js";
 
 export default {
   props: {
@@ -258,22 +260,23 @@ export default {
         .on("click", async (e, data) => {
           //因為要設定到下一層所以+1
           this.mapOnClick(currDeep + 1, data);
-        })
+        });
       var tooltipTriggerList = [].slice.call(
         document.querySelectorAll('[data-bs-toggle="tooltip"]')
       );
+      console.log("bootstrap", bootstrap);
+
       tooltipTriggerList.map(function (tooltipTriggerEl) {
         const tooltipInstance = new bootstrap.Tooltip(tooltipTriggerEl);
 
-        tooltipTriggerEl.addEventListener('click', () => {
+        tooltipTriggerEl.addEventListener("click", () => {
           tooltipInstance.hide();
         });
-        tooltipTriggerEl.addEventListener('dragStart', () => {
+        tooltipTriggerEl.addEventListener("dragStart", () => {
           tooltipInstance.hide();
         });
-        return tooltipInstance
+        return tooltipInstance;
       });
-
     },
     async mapOnClick(deep, data) {
       const id = data.id ? data.id : data.properties.VILLCODE;
