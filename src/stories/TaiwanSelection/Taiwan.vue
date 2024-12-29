@@ -30,7 +30,6 @@ export default {
   emits: [
     "updateDeep",
     "getLocationData",
-    "updateAddress",
     "updateSelectionInfo",
     "update:loading",
   ],
@@ -72,9 +71,6 @@ export default {
       handler(newVal, oldVal) {
         this.updateDeepVal(newVal, oldVal);
       },
-    },
-    currAddress(val) {
-      this.$emit("updateAddress", val);
     },
     // 父層查詢事件
     async searchParam(param) {
@@ -229,6 +225,7 @@ export default {
     appendMap(dom, mapData) {
       const path = d3.geoPath();
       const currDeep = this.deepVal; //避免傳參考影響每層的deep值
+      // console.log('mapData',mapData);
       dom
         .selectAll("path")
         .data(mapData)
@@ -236,7 +233,7 @@ export default {
         .append("path")
         .attr("d", path)
         .attr("stroke", "#fff")
-        .attr("fill", (data) => {
+        .attr("fill", (data) => {          
           const id = data.id ? data.id : data.properties.VILLCODE;
           const selectData = this.selectionData.filter((item) =>
             item.village_id.startsWith(id)
@@ -248,7 +245,7 @@ export default {
         .on("click", async (e, data) => {
           //因為要設定到下一層所以+1
           this.mapOnClick(currDeep + 1, data);
-        });
+        })        
     },
     async mapOnClick(deep, data) {
       const id = data.id ? data.id : data.properties.VILLCODE;
@@ -368,7 +365,6 @@ export default {
           return this.townInfo;
         case 3:
           return this.villageInfo;
-
         default:
           return {};
       }

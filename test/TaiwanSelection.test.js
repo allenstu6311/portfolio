@@ -12,8 +12,7 @@ import TaiwanSelection from "@/stories/TaiwanSelection/Taiwan.vue";
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import { JSDOM } from "jsdom";
-import { nextTick } from "vue";
-import country from "../public/data/TaiwanSelection/topoJson/towns-mercator.json"
+import countryData from "../public/data/TaiwanSelection/topoJson/towns-mercator.json"
 
 describe("TaiwanSelection.vue", () => {
   let wrapper;
@@ -36,7 +35,26 @@ describe("TaiwanSelection.vue", () => {
   it("calauteSelectionRate", () => {
     const { calauteSelectionRate } = wrapper.vm;
     const id = 68000050039;
-    const data = [
+    const data1 = [
+      {
+        village_id: "68000050039",
+        cand_info: [
+          {
+            cand_no: 1,
+            tks_rate: 39.96,
+          },
+          {
+            cand_no: 2,
+            tks_rate: 37.67,
+          },
+          {
+            cand_no: 3,
+            tks_rate: 30.38,
+          },
+        ],
+      },
+    ];
+    const data2 = [
       {
         village_id: "68000050039",
         cand_info: [
@@ -55,8 +73,29 @@ describe("TaiwanSelection.vue", () => {
         ],
       },
     ];
+    const data3 = [
+      {
+        village_id: "68000050039",
+        cand_info: [
+          {
+            cand_no: 1,
+            tks_rate: 31.96,
+          },
+          {
+            cand_no: 2,
+            tks_rate: 37.67,
+          },
+          {
+            cand_no: 3,
+            tks_rate: 70.38,
+          },
+        ],
+      },
+    ];
 
-    expect(calauteSelectionRate(id, data)).toBe("rgb(88, 220, 152)");
+    expect(calauteSelectionRate(id, data1)).toBe("#00ffff");
+    expect(calauteSelectionRate(id, data2)).toBe("rgb(88, 220, 152)");
+    expect(calauteSelectionRate(id, data3)).toBe("rgb(56, 112, 189)");
   });
 
   // 初始化地圖
@@ -72,19 +111,21 @@ describe("TaiwanSelection.vue", () => {
     expect(villageSvg.attr("class")).toBe("selected-county-villages");
   });
 
-  // 刪除地圖
-  // it("removeChild", async ()=>{
-  //   const { removeChild, getDomFromDeep, initMap, appendMap } = wrapper.vm;
-  //   await initMap(true);
-  //   // appendMap(0);
-  //   console.log('country',country);
-    
-  //   const dom = getDomFromDeep(0);
+  // 生成地圖
+  it('appendMap', async ()=>{
+    const { initMap, appendMap, getDomFromDeep } = wrapper.vm;
+    await initMap(true);
+    const dom = getDomFromDeep(0);
+    const mapData = topojson.feature(
+      countryData,
+      countryData.objects.counties
+    ).features
+    appendMap(dom, mapData);
+    expect(dom.selectAll("path").size()).toBe(mapData.length)
+  })
 
-  //   // setTimeout(()=>{
-  //   //   console.log('dom=>',dom.selectAll("path").empty());
-  //   // },1000)
-
-    
-  // })
+  //removeChild
+  //moveMap
+  //focusMap
+  //moveMapInCenter
 });

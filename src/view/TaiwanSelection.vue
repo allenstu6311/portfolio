@@ -189,7 +189,6 @@ export default {
     return {
       deep: 0,
       locationData: {},
-      currAddress: "",
       locationOptions: [],
       searchStr: "",
       searchParam: {},
