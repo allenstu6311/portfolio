@@ -176,7 +176,7 @@
 <script>
 import Taiwan from "@/stories/TaiwanSelection/Taiwan.vue";
 import Selection from "@/stories/TaiwanSelection/Selection.vue";
-import "@/assets/js/bootstrap.min.js";
+// import "@/assets/js/bootstrap.min.js";
 import { pathname } from "../utils/TaiwanSelection";
 
 export default {

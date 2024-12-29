@@ -12,7 +12,7 @@ import * as d3 from "d3";
 import * as topojson from "topojson";
 import { pathname } from "../../utils/TaiwanSelection";
 // import * as bootstrap from "@/assets/js/bootstrap.min.js";
-import "@/assets/js/bootstrap.min.js";
+// import "@/assets/js/bootstrap.min.js";
 
 export default {
   props: {
