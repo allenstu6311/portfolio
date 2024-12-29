@@ -251,7 +251,7 @@ export default {
         .attr("stroke-width", `0.${currDeep === 0 ? 3 : 1}`)
         .attr("data-bs-placement", "top")
         .attr("data-bs-toggle", "tooltip")
-        .attr("data-bs-html", true)
+        .attr("draggable", "true")
         .attr("title", (data) => {
           const id = data.id ? data.id : data.properties.VILLCODE;
           return this.locationMap[id];
@@ -261,21 +261,26 @@ export default {
           //因為要設定到下一層所以+1
           this.mapOnClick(currDeep + 1, data);
         });
-      console.log("bootstrap", typeof bootstrap);
+
       if (typeof bootstrap !== "undefined") {
         let tooltipTriggerList = [].slice.call(
           document.querySelectorAll('[data-bs-toggle="tooltip"]')
         );
 
         tooltipTriggerList.map(function (tooltipTriggerEl) {
-          const tooltipInstance = new bootstrap.Tooltip(tooltipTriggerEl);
-
+          const tooltipInstance = new bootstrap.Tooltip(tooltipTriggerEl, {
+            placement: "top",
+            trigger: "hover",
+          });
+          // 調整位置
+          tooltipTriggerEl.addEventListener("mouseenter", () => {
+            tooltipInstance.update();
+          });
+          // 隱藏上一個tips
           tooltipTriggerEl.addEventListener("click", () => {
             tooltipInstance.hide();
           });
-          tooltipTriggerEl.addEventListener("dragStart", () => {
-            tooltipInstance.hide();
-          });
+
           return tooltipInstance;
         });
       }
