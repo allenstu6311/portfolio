@@ -4,7 +4,7 @@
 <script>
 import {
   assignValue,
-  getBBoxCenter,
+  getInitSize,
   getPartyColorBySupport,
   getTransform,
 } from "@/utils/TaiwanSelection";
@@ -150,7 +150,7 @@ export default {
     },
     moveMapInCenter() {
       const dom = this.mapGroup.node();
-      const { zoomLevel } = getBBoxCenter(this.mapGroup.node());
+      const zoomLevel = getInitSize(this.mapGroup.node());
       const { translateX, translateY } = getTransform(dom, zoomLevel);
 
       // 应用过渡效果

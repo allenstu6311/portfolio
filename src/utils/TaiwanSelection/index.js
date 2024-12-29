@@ -54,11 +54,11 @@ export async function assignValue(id, deep) {
   return keys;
 }
 
-export function getBBoxCenter(svg) {
+export function getInitSize(svg) {
   const svgBox = svg.getBBox();
 
   const { innerWidth, innerHeight } = window;
-  let scaleFactor = 0.7;
+  let scaleFactor = 0.8;
 
   if (innerWidth < 500) {
     scaleFactor = 0.6;
@@ -70,10 +70,7 @@ export function getBBoxCenter(svg) {
   const scaleY = innerHeight / svgBox.height;
   const zoomLevel = Math.min(scaleX, scaleY) * scaleFactor; // 選擇較小的縮放比例
 
-  const centerX = (svgBox.x + svgBox.width / 2) * zoomLevel;
-  const centerY = (svgBox.y + svgBox.height / 2) * zoomLevel;
-
-  return { svgBox, centerX, centerY, zoomLevel };
+  return zoomLevel;
 }
 
 export function getPartyColorBySupport(party, support) {
