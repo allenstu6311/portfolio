@@ -232,7 +232,7 @@ export default {
     appendMap(dom, mapData) {
       const path = d3.geoPath();
       const currDeep = this.deepVal; //避免傳參考影響每層的deep值
-      // console.log('mapData',mapData);
+
       dom
         .selectAll("path")
         .data(mapData)
