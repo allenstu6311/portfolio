@@ -318,7 +318,7 @@ export default {
         this.removeChild(newDeep, oldDeep);
       }
       const currInfo = this.getInfoFromDeep(newDeep);
-      this.focusMap();
+      this.focusMap(newDeep, currInfo.targetData);
       this.$emit("getLocationData", currInfo);
 
       if (newDeep < 3) {
@@ -407,23 +407,22 @@ export default {
           return {};
       }
     },
-    focusMap(deep) {
-      const useDeep = deep === undefined ? this.deepVal : deep;
+    focusMap(deep, targetData) {
       const foucsNode = this.mapGroup.select(".focus").node();
       if (foucsNode) this.mapGroup.select(".focus").remove();
-
       const path = d3.geoPath();
-      let currInfo = this.getInfoFromDeep(useDeep);
 
       this.mapGroup
-        .datum(currInfo.targetData)
+        .datum(targetData)
         .append("path")
         .attr("d", path)
         .attr("stroke", "#FFFA76")
         .attr("fill", "none")
         .attr("class", "focus")
-        .attr("stroke-width", `0.${4 - useDeep}`);
+        .attr("stroke-width", `0.${4 - deep}`);
       // .attr("stroke-width", `0.4`);
+
+      console.log("this.mapGroup", this.mapGroup.select(".focus").node());
     },
     getSelectionData(id) {
       if (!id) return;
@@ -436,13 +435,12 @@ export default {
       let cand_2 = 0; // 民進黨
       let cand_3 = 0; // 國民黨
 
-      for (let i = 0; i < data.length; i++) {
-        const { cand_info } = data[i];
-
+      data.forEach((item) => {
+        const { cand_info } = item;
         cand_1 += cand_info[0].tks_rate;
         cand_2 += cand_info[1].tks_rate;
         cand_3 += cand_info[2].tks_rate;
-      }
+      });
 
       this.selectionInfo[id] = {
         cand_1: (cand_1 / data.length).toFixed(2),

@@ -1,5 +1,4 @@
 # TaiwanSelection
 
-1. CICD 失敗時不更新遠端的 master
-2. 完整 vitest
-3. 初始化顯示的尺寸
+1. 完整 vitest
+2. 將 API 改由攔截器請求

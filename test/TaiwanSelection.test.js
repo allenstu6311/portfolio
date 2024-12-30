@@ -12,7 +12,7 @@ import TaiwanSelection from "@/stories/TaiwanSelection/Taiwan.vue";
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import { JSDOM } from "jsdom";
-import countryData from "../public/data/TaiwanSelection/topoJson/towns-mercator.json"
+import countryData from "../public/data/TaiwanSelection/topoJson/towns-mercator.json";
 
 describe("TaiwanSelection.vue", () => {
   let wrapper;
@@ -23,8 +23,10 @@ describe("TaiwanSelection.vue", () => {
     TaiwanSelection.mounted = vi.fn();
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     wrapper = shallowMount(TaiwanSelection);
+    const { initMap } = wrapper.vm;
+    await initMap(true);
   });
 
   afterEach(() => {
@@ -100,8 +102,6 @@ describe("TaiwanSelection.vue", () => {
 
   // 初始化地圖
   it("initMap", async () => {
-    const { initMap } = wrapper.vm;
-    await initMap(true);
     const { d3Svg, mapGroup, countrySvg, townSvg, villageSvg } = wrapper.vm;
 
     expect(d3Svg.node().tagName).toBe("svg");
@@ -112,20 +112,31 @@ describe("TaiwanSelection.vue", () => {
   });
 
   // 生成地圖
-  it('appendMap', async ()=>{
-    const { initMap, appendMap, getDomFromDeep } = wrapper.vm;
-    await initMap(true);
+  it("appendMap", async () => {
+    const { appendMap, getDomFromDeep } = wrapper.vm;
     const dom = getDomFromDeep(0);
     const mapData = topojson.feature(
       countryData,
       countryData.objects.counties
-    ).features
+    ).features;
     appendMap(dom, mapData);
-    expect(dom.selectAll("path").size()).toBe(mapData.length)
-  })
+    expect(dom.selectAll("path").size()).toBe(mapData.length);
+  });
 
   //removeChild
   //moveMap
   //focusMap
+  it("focusMap", () => {
+    const { focusMap } = wrapper.vm;
+    const mapData = topojson.feature(countryData, countryData.objects.counties)
+      .features[0];
+    focusMap(1, mapData);
+    const { mapGroup } = wrapper.vm;
+    const focusNode = mapGroup.select(".focus").node();
+
+    expect(focusNode).not.toBe(null);
+    expect(focusNode.getAttribute("fill")).toBe("none");
+    expect(focusNode.getAttribute("stroke-width")).toBe("0.3");
+  });
   //moveMapInCenter
 });
