@@ -68,8 +68,7 @@ export default {
       selectionData: [],
       selectionInfo: {},
       zoom: null,
-      isMouseDown: false,
-      allowZoom: true,
+      allowAutoZoom: true, //允許D3自動調整位置
     };
   },
   watch: {
@@ -132,7 +131,7 @@ export default {
           .zoom()
           .scaleExtent([1, 30])
           .on("zoom", (d, data) => {
-            if (this.deepVal > 0 || this.allowZoom) {
+            if (this.deepVal > 0 || this.allowAutoZoom) {
               this.zoomed(d, data);
             }
           });
@@ -162,7 +161,7 @@ export default {
           d3.zoomIdentity.translate(translateX, translateY).scale(zoomLevel)
         )
         .on("end", () => {
-          this.allowZoom = false; // 初始化不允許滑鼠移動地圖及縮放
+          this.allowAutoZoom = false; // 初始化不允許滑鼠移動地圖及縮放
           this.$emit("update:loading", false);
         });
     },
@@ -227,12 +226,13 @@ export default {
     getGenMapData(deep, id) {
       const dom = this.getDomFromDeep(deep);
       const mapData = this.getFeatureById(deep, id);
+
       return { dom, mapData };
     },
     appendMap(dom, mapData) {
       const path = d3.geoPath();
       const currDeep = this.deepVal; //避免傳參考影響每層的deep值
-      // console.log('mapData',mapData);
+
       dom
         .selectAll("path")
         .data(mapData)
@@ -263,27 +263,30 @@ export default {
         });
 
       if (typeof bootstrap !== "undefined") {
-        let tooltipTriggerList = [].slice.call(
-          document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        );
-
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-          const tooltipInstance = new bootstrap.Tooltip(tooltipTriggerEl, {
-            placement: "top",
-            trigger: "hover",
-          });
-          // 調整位置
-          tooltipTriggerEl.addEventListener("mouseenter", () => {
-            tooltipInstance.update();
-          });
-          // 隱藏上一個tips
-          tooltipTriggerEl.addEventListener("click", () => {
-            tooltipInstance.hide();
-          });
-
-          return tooltipInstance;
-        });
+        this.genTips();
       }
+    },
+    genTips() {
+      const tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        const tooltipInstance = new bootstrap.Tooltip(tooltipTriggerEl, {
+          placement: "top",
+          trigger: "hover",
+        });
+        // 調整位置
+        tooltipTriggerEl.addEventListener("mouseenter", () => {
+          tooltipInstance.update();
+        });
+        // 隱藏上一個tips
+        tooltipTriggerEl.addEventListener("click", () => {
+          tooltipInstance.hide();
+        });
+
+        return tooltipInstance;
+      });
     },
     async mapOnClick(deep, data) {
       const id = data.id ? data.id : data.properties.VILLCODE;
@@ -291,10 +294,6 @@ export default {
 
       if (deep === 1) {
         this.villageData = await this.getMapData(id); //取得村里SVG
-
-        // 切換縣市
-        this.townSvg.selectAll("path").remove();
-        this.villageSvg.selectAll("path").remove();
       }
 
       if (deep === this.deepVal) {
@@ -313,9 +312,12 @@ export default {
       currInfo.targetData = this.getFeatureById(deep - DATA_INDEX, id, true);
     },
     updateDeepVal(newDeep, oldDeep) {
-      // console.log("newDeep", newDeep, "oldDeep", oldDeep);
-      if (newDeep > 0 || oldDeep > newDeep) {
-        this.removeChild(newDeep, oldDeep);
+      const delCondition =
+        (newDeep > 0 || oldDeep > newDeep) && // 深度達到0以上或新目標深度大於舊目標深度
+        !(newDeep === 3 && oldDeep === 3); // 最底層的切換不須刪除
+
+      if (delCondition) {
+        this.calculateNodesToDelete(newDeep, oldDeep);
       }
       const currInfo = this.getInfoFromDeep(newDeep);
       this.focusMap(newDeep, currInfo.targetData);
@@ -323,25 +325,32 @@ export default {
 
       if (newDeep < 3) {
         const { dom, mapData } = this.getGenMapData(newDeep, currInfo.id);
+        console.log("currInfo.id", currInfo.id);
+
         this.appendMap(dom, mapData);
       }
       if (newDeep === 0) {
-        this.allowZoom = true;
+        this.allowAutoZoom = true;
         this.moveMapInCenter();
       } else {
         this.moveMap(currInfo.targetData);
       }
     },
-    removeChild(newDeep, oldDeep) {
-      if (newDeep === 3 && oldDeep === 3) return;
+    removeAllPath(dom) {
+      dom.selectAll("path").remove();
+    },
+    calculateNodesToDelete(newDeep, oldDeep) {
+      console.log("newDeep", newDeep, "oldDeep", oldDeep);
 
-      const delNode = (deep) => {
-        const dom = this.getDomFromDeep(deep);
-        dom.selectAll("path").remove();
-      };
+      // 切換縣市
+      if (newDeep === 1) {
+        this.removeAllPath(this.townSvg);
+        this.removeAllPath(this.villageSvg);
+      }
+      // 同層移動
       if (newDeep === oldDeep) {
-        // 同層移動
-        delNode(newDeep);
+        const dom = this.getDomFromDeep(newDeep);
+        this.removeAllPath(dom);
       } else if (oldDeep > newDeep) {
         /**
          * 不同層移動(里=>縣 or 區=>里)
@@ -349,7 +358,8 @@ export default {
          * 層的點擊僅須返回一層
          */
         while (oldDeep > newDeep) {
-          delNode(oldDeep);
+          const dom = this.getDomFromDeep(oldDeep);
+          this.removeAllPath(dom);
           oldDeep--;
         }
       }
@@ -420,9 +430,7 @@ export default {
         .attr("fill", "none")
         .attr("class", "focus")
         .attr("stroke-width", `0.${4 - deep}`);
-      // .attr("stroke-width", `0.4`);
-
-      console.log("this.mapGroup", this.mapGroup.select(".focus").node());
+      // console.log("this.mapGroup", this.mapGroup.node());
     },
     getSelectionData(id) {
       if (!id) return;
@@ -461,7 +469,7 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", async () => {
-      this.allowZoom = true;
+      this.allowAutoZoom = true;
       this.initEnv();
 
       const length = this.deepVal;
