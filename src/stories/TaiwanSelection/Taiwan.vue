@@ -11,8 +11,6 @@ import {
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import { pathname } from "../../utils/TaiwanSelection";
-// import bootstrap from "@/assets/js/bootstrap.min.js";
-// import "@/assets/js/bootstrap.min.js";
 
 export default {
   props: {
@@ -185,7 +183,6 @@ export default {
     },
     getFeatureById(deep, id, isSingle) {
       let data;
-
       switch (deep) {
         case 0:
           data = topojson.feature(
@@ -325,8 +322,6 @@ export default {
 
       if (newDeep < 3) {
         const { dom, mapData } = this.getGenMapData(newDeep, currInfo.id);
-        console.log("currInfo.id", currInfo.id);
-
         this.appendMap(dom, mapData);
       }
       if (newDeep === 0) {
@@ -340,8 +335,6 @@ export default {
       dom.selectAll("path").remove();
     },
     calculateNodesToDelete(newDeep, oldDeep) {
-      console.log("newDeep", newDeep, "oldDeep", oldDeep);
-
       // 切換縣市
       if (newDeep === 1) {
         this.removeAllPath(this.townSvg);
