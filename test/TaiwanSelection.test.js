@@ -27,9 +27,7 @@ describe("TaiwanSelection.vue", () => {
 
   let wrapper;
   beforeAll(() => {
-    // Mock initMap 方法，避免執行真實邏輯
-    // TaiwanSelection.methods.initMap = vi.fn();
-    // TaiwanSelection.methods.initD3js = vi.fn();
+    // Mock mounted 方法，避免執行真實邏輯
     TaiwanSelection.mounted = vi.fn();
   });
 
@@ -51,8 +49,10 @@ describe("TaiwanSelection.vue", () => {
     ).features;
 
     const { initMap, appendMap, getDomFromDeep } = wrapper.vm;
+    // 初始化d3地圖
     await initMap(true);
     const dom = getDomFromDeep(0);
+    // 產生d3地圖
     appendMap(dom, mapData);
   });
 
@@ -173,7 +173,7 @@ describe("TaiwanSelection.vue", () => {
     removeAllPath(svg);
     expect(svg.selectAll("path").size()).toBe(0);
   });
-  //moveMap
+
   //地圖聚焦
   it("focusMap", () => {
     const { focusMap } = wrapper.vm;
@@ -185,5 +185,18 @@ describe("TaiwanSelection.vue", () => {
     expect(focusNode.getAttribute("d")).not.toBe(null);
     expect(focusNode.getAttribute("stroke-width")).toBe("0.3");
   });
+
   //moveMapInCenter
+  // it.only("moveMapInCenter", () => {
+  //   const { moveMapInCenter } = wrapper.vm;
+  //   const { mapGroup } = wrapper.vm;
+  //   const node = mapGroup.node();
+  //   const transform = node.getAttribute("class");
+  //   console.log("transform 1", transform);
+
+  //   moveMapInCenter();
+  //   console.log("transform 2", transform);
+  // });
+
+  //moveMap
 });
