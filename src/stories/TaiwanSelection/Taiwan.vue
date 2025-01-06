@@ -12,6 +12,9 @@ import * as d3 from "d3";
 import * as topojson from "topojson";
 import { pathname } from "../../utils/TaiwanSelection";
 
+const { bounds } = d3.geoPath();
+const geoPath = d3.geoPath();
+
 export default {
   props: {
     deepVal: {
@@ -67,6 +70,7 @@ export default {
       selectionInfo: {},
       zoom: null,
       allowAutoZoom: true, //允許D3自動調整位置
+      initData: {},
     };
   },
   watch: {
@@ -93,6 +97,7 @@ export default {
       if (init) {
         this.initMap();
         this.areaData = await this.getMapData(); //獲得第一層圖層
+
         const { counties } = this.areaData.objects;
 
         // 等待所有請求完成
@@ -102,11 +107,20 @@ export default {
         const results = await Promise.all(promises);
         // 批量更新數據
         this.selectionData = results.flat(); // 將所有結果展平合併
-        // 產生地圖
+
         const { dom, mapData } = this.getGenMapData(0);
+        this.initData = bounds({
+          type: "FeatureCollection",
+          features: mapData, // 将你的数组包装成 FeatureCollection
+        });
+        console.log("initData", {
+          type: "FeatureCollection",
+          features: mapData, // 将你的数组包装成 FeatureCollection
+        });
+        // 產生地圖
         this.appendMap(dom, mapData);
       }
-      this.moveMapInCenter();
+      this.moveMap(this.initData);
     },
     initMap() {
       const { svg } = this.$refs;
@@ -145,24 +159,24 @@ export default {
       this.mapGroup.attr("transform", `translate(${x},${y}) scale(${k})`);
       this.mapGroup.attr("stroke-width", 1 / transform.k);
     },
-    moveMapInCenter() {
-      const dom = this.mapGroup.node();
-      const zoomLevel = getInitSize(this.mapGroup.node());
-      const { translateX, translateY } = getTransform(dom, zoomLevel);
+    // moveMapInCenter() {
+    //   const dom = this.mapGroup.node();
+    //   const zoomLevel = getInitSize(this.mapGroup.node());
+    //   const { translateX, translateY } = getTransform(dom, zoomLevel);
 
-      // 应用过渡效果
-      this.d3Svg
-        .transition()
-        .duration(500)
-        .call(
-          this.zoom.transform,
-          d3.zoomIdentity.translate(translateX, translateY).scale(zoomLevel)
-        )
-        .on("end", () => {
-          this.allowAutoZoom = false; // 初始化不允許滑鼠移動地圖及縮放
-          this.$emit("update:loading", false);
-        });
-    },
+    //   // 应用过渡效果
+    //   this.d3Svg
+    //     .transition()
+    //     .duration(500)
+    //     .call(
+    //       this.zoom.transform,
+    //       d3.zoomIdentity.translate(translateX, translateY).scale(zoomLevel)
+    //     )
+    //     .on("end", () => {
+    //       this.allowAutoZoom = false; // 初始化不允許滑鼠移動地圖及縮放
+    //       this.$emit("update:loading", false);
+    //     });
+    // },
     getMapData(id) {
       let url = `${pathname}/data/TaiwanSelection/topoJson/towns-mercator.json`;
       if (id) {
@@ -189,6 +203,7 @@ export default {
             this.areaData,
             this.areaData.objects.counties
           ).features;
+
           break;
         case 1:
           data = topojson.feature(
@@ -223,19 +238,16 @@ export default {
     getGenMapData(deep, id) {
       const dom = this.getDomFromDeep(deep);
       const mapData = this.getFeatureById(deep, id);
-
       return { dom, mapData };
     },
     appendMap(dom, mapData) {
-      const path = d3.geoPath();
       const currDeep = this.deepVal; //避免傳參考影響每層的deep值
-
       dom
         .selectAll("path")
         .data(mapData)
         .enter()
         .append("path")
-        .attr("d", path)
+        .attr("d", geoPath)
         .attr("stroke", "#fff")
         .attr("fill", (data) => {
           const id = data.id ? data.id : data.properties.VILLCODE;
@@ -273,6 +285,7 @@ export default {
           placement: "top",
           trigger: "hover",
         });
+
         // 調整位置
         tooltipTriggerEl.addEventListener("mouseenter", () => {
           tooltipInstance.update();
@@ -324,11 +337,14 @@ export default {
         const { dom, mapData } = this.getGenMapData(newDeep, currInfo.id);
         this.appendMap(dom, mapData);
       }
+
       if (newDeep === 0) {
         this.allowAutoZoom = true;
-        this.moveMapInCenter();
+        this.moveMap(this.initData);
       } else {
-        this.moveMap(currInfo.targetData);
+        console.log("currInfo.targetData", currInfo.targetData);
+
+        this.moveMap(bounds(currInfo.targetData));
       }
     },
     removeAllPath(dom) {
@@ -358,25 +374,7 @@ export default {
       }
     },
     moveMap(data) {
-      const path = d3.geoPath();
-      /**
-       * (x0, y0) 可以代表左上或左下
-       * (x1, y1) 可以代表右上或右下
-       *
-       * x1 - x0 物件寬
-       * y1 - y0 物件高
-       */
-      const [[x0, y0], [x1, y1]] = path.bounds(data);
-      const { innerWidth, innerHeight } = window;
-      // 计算新的 transform
-      const scale = Math.min(
-        30, // 最大縮放尺寸限制
-        0.9 / Math.max((x1 - x0) / innerWidth, (y1 - y0) / innerHeight)
-      );
-
-      const translateX = innerWidth / 2 - (scale * (x0 + x1)) / 2;
-      const translateY = innerHeight / 2 - (scale * (y0 + y1)) / 2;
-
+      const { translateX, translateY, scale } = getTransform(data);
       // 应用过渡效果
       this.d3Svg
         .transition()
@@ -384,7 +382,11 @@ export default {
         .call(
           this.zoom.transform,
           d3.zoomIdentity.translate(translateX, translateY).scale(scale)
-        );
+        )
+        .on("end", () => {
+          this.allowAutoZoom = false; // 初始化不允許滑鼠移動地圖及縮放
+          this.$emit("update:loading", false);
+        });
     },
     getDomFromDeep(deep) {
       const useDeep = deep === undefined ? this.deepVal : deep;
@@ -413,12 +415,11 @@ export default {
     focusMap(deep, targetData) {
       const foucsNode = this.mapGroup.select(".focus").node();
       if (foucsNode) this.mapGroup.select(".focus").remove();
-      const path = d3.geoPath();
 
       this.mapGroup
         .datum(targetData)
         .append("path")
-        .attr("d", path)
+        .attr("d", geoPath)
         .attr("stroke", "#FFFA76")
         .attr("fill", "none")
         .attr("class", "focus")

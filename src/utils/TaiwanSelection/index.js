@@ -87,16 +87,38 @@ export function getPartyColorBySupport(party, support) {
   }
 }
 
-export function getTransform(svg, scale = 1) {
+// export function getTransform(svg, scale = 1) {
+//   const { innerWidth, innerHeight } = window;
+
+//   const svgBox = svg.getBBox();
+//   const centerX = (svgBox.x + svgBox.width / 2) * scale;
+//   const centerY = (svgBox.y + svgBox.height / 2) * scale;
+
+//   // 计算平移值
+//   const translateX = innerWidth / 2 - centerX;
+//   const translateY = innerHeight / 2 - centerY;
+
+//   return { translateX, translateY };
+// }
+
+export function getTransform(data) {
+  /**
+   * (x0, y0) 可以代表左上或左下
+   * (x1, y1) 可以代表右上或右下
+   *
+   * x1 - x0 物件寬
+   * y1 - y0 物件高
+   */
+  const [[x0, y0], [x1, y1]] = data;
   const { innerWidth, innerHeight } = window;
 
-  const svgBox = svg.getBBox();
-  const centerX = (svgBox.x + svgBox.width / 2) * scale;
-  const centerY = (svgBox.y + svgBox.height / 2) * scale;
+  // 计算新的 transform
+  const scale = Math.min(
+    30, // 最大縮放尺寸限制
+    0.8 / Math.max((x1 - x0) / innerWidth, (y1 - y0) / innerHeight)
+  );
 
-  // 计算平移值
-  const translateX = innerWidth / 2 - centerX;
-  const translateY = innerHeight / 2 - centerY;
-
-  return { translateX, translateY };
+  const translateX = innerWidth / 2 - (scale * (x0 + x1)) / 2;
+  const translateY = innerHeight / 2 - (scale * (y0 + y1)) / 2;
+  return { scale, translateX, translateY };
 }
