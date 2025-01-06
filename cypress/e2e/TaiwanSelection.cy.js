@@ -1,5 +1,3 @@
-
-
 describe("選情地圖移動測試", () => {
   it("testing", () => {
     const animationTime = 1500;
@@ -7,10 +5,12 @@ describe("選情地圖移動測試", () => {
     cy.visit("http://localhost:5173/TaiwanSelection");
     cy.viewport(1450, 750);
 
-    cy.intercept("GET", "/data/TaiwanSelection/topoJson/selection/*").as("getData");
+    cy.intercept("GET", "/data/TaiwanSelection/topoJson/selection/*").as(
+      "getData"
+    );
 
     // 發出所有請求（假設這裡是應用初始化時自動觸發的 22 次請求）
-    cy.wait(Array(22).fill("@getData"))// 一次性等待所有 22 次請求完成
+    cy.wait(Array(22).fill("@getData")); // 一次性等待所有 22 次請求完成
 
     let currDeep = 0;
     function reset() {
@@ -34,10 +34,8 @@ describe("選情地圖移動測試", () => {
     }
 
     // 等待loading結束
-    cy.get(".spinner-border")
-    .should('not.exist')
+    cy.get(".spinner-border").should("not.exist");
 
-   
     cy.wait(animationTime);
     // pc測試
     moveTest(".map-group .selected-county-country", 1);
@@ -47,36 +45,36 @@ describe("選情地圖移動測試", () => {
     moveTest(".map-group .selected-county-towns", 2, 1);
 
     moveTest(".map-group .selected-county-villages", 3);
-    moveTest(".map-group .selected-county-villages", 3,5);
+    moveTest(".map-group .selected-county-villages", 3, 5);
     reset();
 
     cy.get(".window-pc input").type("桃園市");
-    moveTest('.window-pc .location-options',1)
+    moveTest(".window-pc .location-options", 1);
 
     cy.get(".window-pc input").type("桃園市大園區");
-    moveTest('.window-pc .location-options',2)
+    moveTest(".window-pc .location-options", 2);
 
     cy.get(".window-pc input").type("桃園市大園區竹圍里");
-    moveTest('.window-pc .location-options',3)
-    reset()
+    moveTest(".window-pc .location-options", 3);
+    reset();
 
     // H5測試
     cy.viewport(550, 750);
     cy.get(".search-button").click();
 
     cy.get(".search-h5 input").type("桃園市");
-    moveTest('.search-h5 .location-options',1);
+    moveTest(".search-h5 .location-options", 1);
 
     cy.get(".search-button").click();
 
     cy.get(".search-h5 input").type("桃園市大園區");
-    moveTest('.search-h5 .location-options',2)
+    moveTest(".search-h5 .location-options", 2);
 
     cy.get(".search-button").click();
 
     cy.get(".search-h5 input").type("桃園市大園區竹圍里");
-    moveTest('.search-h5 .location-options',3);
+    moveTest(".search-h5 .location-options", 3);
 
-    cy.log("測試完成 ✅")
+    cy.log("測試完成 ✅");
   });
 });

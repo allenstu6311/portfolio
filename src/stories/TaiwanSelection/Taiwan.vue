@@ -97,7 +97,6 @@ export default {
       if (init) {
         this.initMap();
         this.areaData = await this.getMapData(); //獲得第一層圖層
-
         const { counties } = this.areaData.objects;
 
         // 等待所有請求完成
@@ -110,10 +109,6 @@ export default {
 
         const { dom, mapData } = this.getGenMapData(0);
         this.initData = bounds({
-          type: "FeatureCollection",
-          features: mapData, // 将你的数组包装成 FeatureCollection
-        });
-        console.log("initData", {
           type: "FeatureCollection",
           features: mapData, // 将你的数组包装成 FeatureCollection
         });
@@ -342,8 +337,6 @@ export default {
         this.allowAutoZoom = true;
         this.moveMap(this.initData);
       } else {
-        console.log("currInfo.targetData", currInfo.targetData);
-
         this.moveMap(bounds(currInfo.targetData));
       }
     },

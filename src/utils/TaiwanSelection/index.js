@@ -102,6 +102,7 @@ export function getPartyColorBySupport(party, support) {
 // }
 
 export function getTransform(data) {
+  if (!Array.isArray(data)) return {};
   /**
    * (x0, y0) 可以代表左上或左下
    * (x1, y1) 可以代表右上或右下
