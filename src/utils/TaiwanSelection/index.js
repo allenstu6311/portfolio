@@ -1,9 +1,11 @@
+import { getAreaDetail } from "@/api/TaiwanSelection";
 let countryCsv = [];
 let townsCsv = [];
 let townsId = "";
 
 export const pathname =
-  process.env.NODE_ENV === "production" ? "/portfolio" : "";
+  import.meta.env.MODE === "production" ? "/portfolio" : "";
+// const { pathname } = store;
 
 function pairId(textRow, id) {
   for (let i = 0; i < textRow.length; i++) {
@@ -25,14 +27,13 @@ function parseCSV(text) {
   return rows;
 }
 
-async function getCsv(url, id) {
-  const res = await fetch(`${pathname}/data/TaiwanSelection/csv/${url}.csv`);
-  const text = await res.text();
+async function getCsv(fileName, id) {
+  const text = await getAreaDetail(fileName);
   const textContent = pairId(parseCSV(text), id);
   return textContent;
 }
 
-export async function assignValue(id, deep) {
+export async function getAIAIanalytics(id, deep) {
   let textContent = "";
   switch (deep) {
     case 1:
@@ -45,12 +46,10 @@ export async function assignValue(id, deep) {
       textContent = await getCsv(`village-${id.slice(0, 8)}-gpt`, id);
       break;
   }
-
-  const keys = {
+  return {
     id,
     textContent,
   };
-  return keys;
 }
 
 export function getPartyColorBySupport(party, support) {
@@ -87,6 +86,6 @@ export function getTransform(data) {
 
   const translateX = innerWidth / 2 - (scale * (x0 + x1)) / 2;
   const translateY = innerHeight / 2 - (scale * (y0 + y1)) / 2;
-  
+
   return { scale, translateX, translateY };
 }

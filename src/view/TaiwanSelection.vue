@@ -176,8 +176,9 @@
 <script>
 import Taiwan from "@/stories/TaiwanSelection/Taiwan.vue";
 import Selection from "@/stories/TaiwanSelection/Selection.vue";
-// import "@/assets/js/bootstrap.min.js";
-import { pathname } from "../utils/TaiwanSelection";
+import { getLocationCode } from "@/api/TaiwanSelection";
+
+const pathname = import.meta.env.MODE === "production" ? "/portfolio" : "";
 
 export default {
   components: {
@@ -275,13 +276,10 @@ export default {
       }
     },
     async getLocationCode() {
-      await fetch(`${pathname}/data/TaiwanSelection/csv/area-code.csv`)
-        .then((res) => res.text())
-        .then((text) => {
-          const rows = text.split("\n").slice(1);
-          this.handleLocationMap(rows);
-          this.handleLocationOption(this.locationMap);
-        });
+      const text = await getLocationCode();
+      const rows = text.split("\n").slice(1);
+      this.handleLocationMap(rows);
+      this.handleLocationOption(this.locationMap);
     },
   },
   watch: {
@@ -312,10 +310,9 @@ export default {
       const matchOptions = this.locationOptions
         .filter((item) => item.name.includes(this.searchStr))
         .map((item) => {
-          const matchIndex = item.name.indexOf(this.searchStr);
           const { countryId, townId } = this.findParentId(item.id);
           const idList = [countryId, townId, item.id].filter((item) => item);
-
+          // 包含更多輸入文字的選項要排更前面
           const matchCount =
             this.searchStr === item.name.slice(0, this.searchStr.length)
               ? this.searchStr.length

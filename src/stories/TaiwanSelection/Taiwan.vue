@@ -3,13 +3,13 @@
 </template>
 <script>
 import {
-  assignValue,
+  getAIAIanalytics,
   getPartyColorBySupport,
   getTransform,
 } from "@/utils/TaiwanSelection";
 import * as d3 from "d3";
 import * as topojson from "topojson";
-import { pathname } from "../../utils/TaiwanSelection";
+import { getSelectionData, getMapData } from "@/api/TaiwanSelection/index";
 
 const { bounds } = d3.geoPath();
 const geoPath = d3.geoPath();
@@ -100,7 +100,7 @@ export default {
 
         // 等待所有請求完成
         const promises = counties.geometries.map((geometry) => {
-          return this.getSelectionData(geometry.id);
+          return getSelectionData(geometry.id);
         });
         const results = await Promise.all(promises);
         // 批量更新數據
@@ -152,23 +152,25 @@ export default {
       this.mapGroup.attr("transform", `translate(${x},${y}) scale(${k})`);
       this.mapGroup.attr("stroke-width", 1 / transform.k);
     },
-    getMapData(id) {
-      let url = `${pathname}/data/TaiwanSelection/topoJson/towns-mercator.json`;
-      if (id) {
+    async getMapData(id) {
+      const isVillage = !!id;
+      const url = isVillage
+        ? `/data/TaiwanSelection/topoJson/tw-village/${id}.json`
+        : `/data/TaiwanSelection/topoJson/towns-mercator.json`;
+
+      if (isVillage) {
         if (this.villageDataList[id]) return this.villageDataList[id];
         this.$emit("update:loading", true);
-        url = `${pathname}/data/TaiwanSelection/topoJson/tw-village/${id}.json`;
       }
-
-      return fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
-          if (id) {
-            this.villageDataList[id] = data;
-            this.$emit("update:loading", false);
-          }
-          return data || {};
-        });
+      try {
+        const data = await getMapData(url);
+        if (isVillage) this.villageDataList[id] = data;
+        return data || {};
+      } catch (error) {
+        return {};
+      } finally {
+        if (isVillage) this.$emit("update:loading", false);
+      }
     },
     getFeatureById(deep, id, isSingle) {
       let data;
@@ -288,7 +290,7 @@ export default {
     },
     async updateCurrInfo(id, deep) {
       const currInfo = this.getInfoFromDeep(deep);
-      Object.assign(currInfo, await assignValue(id, deep));
+      Object.assign(currInfo, await getAIAIanalytics(id, deep));
 
       /**
        * deep為2時，通常對應資料1
@@ -360,7 +362,7 @@ export default {
           .on("end", () => {
             this.allowAutoZoom = false; // 初始化不允許滑鼠移動地圖及縮放
             this.$emit("update:loading", false);
-            resolve(true)
+            resolve(true);
           });
       });
     },
@@ -400,13 +402,6 @@ export default {
         .attr("fill", "none")
         .attr("class", "focus")
         .attr("stroke-width", `0.${4 - deep}`);
-      // console.log("this.mapGroup", this.mapGroup.node());
-    },
-    getSelectionData(id) {
-      if (!id) return;
-      return fetch(
-        `${pathname}/data/TaiwanSelection/topoJson/selection/${id}.json`
-      ).then((res) => res.json());
     },
     calauteSelectionRate(id, data) {
       let cand_1 = 0; // 民眾黨

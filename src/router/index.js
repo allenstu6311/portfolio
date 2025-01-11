@@ -6,7 +6,7 @@ import {
 import TaiwanSelection from "@/view/TaiwanSelection.vue";
 import Test from "@/view/Test.vue";
 
-const pathname = process.env.NODE_ENV === "production" ? "portfolio" : "";
+const pathname = import.meta.env.MODE === "production" ? "portfolio" : "";
 
 const routes = [
   {
