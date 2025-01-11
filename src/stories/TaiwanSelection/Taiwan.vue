@@ -4,7 +4,6 @@
 <script>
 import {
   assignValue,
-  getInitSize,
   getPartyColorBySupport,
   getTransform,
 } from "@/utils/TaiwanSelection";
@@ -142,7 +141,6 @@ export default {
               this.zoomed(d, data);
             }
           });
-
         // 註冊zoom事件
         this.d3Svg.call(this.zoom);
       }
@@ -154,24 +152,6 @@ export default {
       this.mapGroup.attr("transform", `translate(${x},${y}) scale(${k})`);
       this.mapGroup.attr("stroke-width", 1 / transform.k);
     },
-    // moveMapInCenter() {
-    //   const dom = this.mapGroup.node();
-    //   const zoomLevel = getInitSize(this.mapGroup.node());
-    //   const { translateX, translateY } = getTransform(dom, zoomLevel);
-
-    //   // 应用过渡效果
-    //   this.d3Svg
-    //     .transition()
-    //     .duration(500)
-    //     .call(
-    //       this.zoom.transform,
-    //       d3.zoomIdentity.translate(translateX, translateY).scale(zoomLevel)
-    //     )
-    //     .on("end", () => {
-    //       this.allowAutoZoom = false; // 初始化不允許滑鼠移動地圖及縮放
-    //       this.$emit("update:loading", false);
-    //     });
-    // },
     getMapData(id) {
       let url = `${pathname}/data/TaiwanSelection/topoJson/towns-mercator.json`;
       if (id) {
@@ -367,19 +347,22 @@ export default {
       }
     },
     moveMap(data) {
-      const { translateX, translateY, scale } = getTransform(data);
-      // 应用过渡效果
-      this.d3Svg
-        .transition()
-        .duration(500)
-        .call(
-          this.zoom.transform,
-          d3.zoomIdentity.translate(translateX, translateY).scale(scale)
-        )
-        .on("end", () => {
-          this.allowAutoZoom = false; // 初始化不允許滑鼠移動地圖及縮放
-          this.$emit("update:loading", false);
-        });
+      return new Promise((resolve) => {
+        const { translateX, translateY, scale } = getTransform(data);
+        // 应用过渡效果
+        this.d3Svg
+          .transition()
+          .duration(500)
+          .call(
+            this.zoom.transform,
+            d3.zoomIdentity.translate(translateX, translateY).scale(scale)
+          )
+          .on("end", () => {
+            this.allowAutoZoom = false; // 初始化不允許滑鼠移動地圖及縮放
+            this.$emit("update:loading", false);
+            resolve(true)
+          });
+      });
     },
     getDomFromDeep(deep) {
       const useDeep = deep === undefined ? this.deepVal : deep;

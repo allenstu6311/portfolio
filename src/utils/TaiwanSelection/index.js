@@ -2,11 +2,10 @@ let countryCsv = [];
 let townsCsv = [];
 let townsId = "";
 
-export const locationMap = {};
 export const pathname =
   process.env.NODE_ENV === "production" ? "/portfolio" : "";
 
-export function pairId(textRow, id) {
+function pairId(textRow, id) {
   for (let i = 0; i < textRow.length; i++) {
     const item = textRow[i];
     if (item[1]?.trim() == id?.trim()) {
@@ -54,25 +53,6 @@ export async function assignValue(id, deep) {
   return keys;
 }
 
-export function getInitSize(svg) {
-  const svgBox = svg.getBBox();
-
-  const { innerWidth, innerHeight } = window;
-  let scaleFactor = 0.8;
-
-  if (innerWidth < 500) {
-    scaleFactor = 0.6;
-  } else if (innerWidth < 968) {
-    scaleFactor = 0.7;
-  }
-
-  const scaleX = innerWidth / svgBox.width;
-  const scaleY = innerHeight / svgBox.height;
-  const zoomLevel = Math.min(scaleX, scaleY) * scaleFactor; // 選擇較小的縮放比例
-
-  return zoomLevel;
-}
-
 export function getPartyColorBySupport(party, support) {
   if (party === 2) {
     if (support < 40) return "rgb(88, 220, 152)";
@@ -86,20 +66,6 @@ export function getPartyColorBySupport(party, support) {
     else return "rgb(56, 112, 189)";
   }
 }
-
-// export function getTransform(svg, scale = 1) {
-//   const { innerWidth, innerHeight } = window;
-
-//   const svgBox = svg.getBBox();
-//   const centerX = (svgBox.x + svgBox.width / 2) * scale;
-//   const centerY = (svgBox.y + svgBox.height / 2) * scale;
-
-//   // 计算平移值
-//   const translateX = innerWidth / 2 - centerX;
-//   const translateY = innerHeight / 2 - centerY;
-
-//   return { translateX, translateY };
-// }
 
 export function getTransform(data) {
   if (!Array.isArray(data)) return {};
@@ -121,5 +87,6 @@ export function getTransform(data) {
 
   const translateX = innerWidth / 2 - (scale * (x0 + x1)) / 2;
   const translateY = innerHeight / 2 - (scale * (y0 + y1)) / 2;
+  
   return { scale, translateX, translateY };
 }

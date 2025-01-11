@@ -11,7 +11,6 @@ import {
 import TaiwanSelection from "@/stories/TaiwanSelection/Taiwan.vue";
 import * as d3 from "d3";
 import * as topojson from "topojson";
-import { JSDOM } from "jsdom";
 import countryData from "../public/data/TaiwanSelection/topoJson/towns-mercator.json";
 import taoyuanVillage from "../public/data/TaiwanSelection/topoJson/tw-village/68000.json";
 
@@ -48,12 +47,13 @@ describe("TaiwanSelection.vue", () => {
       taoyuanVillage.objects.village
     ).features;
 
-    const { initMap, appendMap, getDomFromDeep } = wrapper.vm;
+    const { initMap, appendMap, getDomFromDeep, initD3js } = wrapper.vm;
     // 初始化d3地圖
     await initMap(true);
     const dom = getDomFromDeep(0);
     // 產生d3地圖
     appendMap(dom, mapData);
+    initD3js()
   });
 
   afterEach(() => {
@@ -176,27 +176,39 @@ describe("TaiwanSelection.vue", () => {
 
   //地圖聚焦
   it("focusMap", () => {
-    const { focusMap } = wrapper.vm;
+    const { focusMap, } = wrapper.vm;
     focusMap(1, mapData[0]);
     const { mapGroup } = wrapper.vm;
     const focusNode = mapGroup.select(".focus").node();
-
+    
     expect(focusNode).not.toBe(null);
     expect(focusNode.getAttribute("d")).not.toBe(null);
     expect(focusNode.getAttribute("stroke-width")).toBe("0.3");
   });
 
-  //moveMapInCenter
-  // it.only("moveMapInCenter", () => {
-  //   const { moveMapInCenter } = wrapper.vm;
-  //   const { mapGroup } = wrapper.vm;
-  //   const node = mapGroup.node();
-  //   const transform = node.getAttribute("class");
-  //   console.log("transform 1", transform);
+  //地圖移動
+  it("moveMap", async () => {
+    /**
+     * jsdom的 window的視窗寬度會預設1024 * 768 所以計算結果會跟瀏覽器不同
+     */
+    const { moveMap, d3Svg} = wrapper.vm;
+    const mockData = [
+      [30.446829474992857, 3.0760617112916044],
+      [439.05550598421405, 597.5106757831237],
+    ];
 
-  //   moveMapInCenter();
-  //   console.log("transform 2", transform);
-  // });
-
-  //moveMap
+    d3Svg.node().width = {
+      baseVal:{
+        value: 1536
+      }
+    }
+    d3Svg.node().height = {
+      baseVal:{
+        value: 791.2000122070312
+      }
+    }
+    await moveMap(mockData)
+    const { mapGroup } = wrapper.vm;
+    expect(mapGroup.node().getAttribute('transform')).toBe('translate(269.36420114384634,73.62062203196473) scale(1.0335871859671941)')
+  },);
 });
